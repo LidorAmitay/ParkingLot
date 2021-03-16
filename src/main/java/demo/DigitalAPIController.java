@@ -9,12 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DigitalAPIController {
+	
 	@RequestMapping(
 		path = "/twins/items/{userSpace}/{userEmail}", 
 		method = RequestMethod.POST, 
 		produces = MediaType.APPLICATION_JSON_VALUE,
 		consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary createNewItem (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email,@RequestBody ItemBoundary item) {
-		return null;
+		//item.getItem().setSpace(space);
+		System.err.println("(STUB) successfully written item data to database  " + "id : ");
+		return item;
 	}
 }

@@ -27,36 +27,49 @@ import java.util.Date;
 } */
 public class ItemBoundary {
 	
-	private itemId item;
+	private static long id = 1;
+	private itemId itemId;
 	private String type;
 	private String name;
 	private Boolean active;
 	private Date createdTimestamp;
 	private createdBy maker;
 	private location location;
-	private itemAttributes itemAtt;
+	private itemAttributes itemAttributes;
 	
 	public ItemBoundary() {
 	
 	}
-	public ItemBoundary(itemId item, String type, String name, Boolean active, Date createdTimestamp, createdBy maker,
-			demo.location location, itemAttributes itemAtt) {
+	
+	public ItemBoundary(itemId itemId, String type, String name, Boolean active, Date createdTimestamp, createdBy maker,
+			demo.location location, itemAttributes itemAttributes) {
 		super();
-		this.item = item;
+		this.itemId = new itemId(this.itemId.getSpace(),id++);
 		this.type = type;
 		this.name = name;
 		this.active = active;
 		this.createdTimestamp = createdTimestamp;
 		this.maker = maker;
 		this.location = location;
-		this.itemAtt = itemAtt;
+		this.itemAttributes = itemAttributes;
+	}
+
+	public static void newId() {
+		ItemBoundary.id = id++;
+	}
+	public static long getId() {
+		return id;
+	}
+
+	public static void setId(long id) {
+		ItemBoundary.id = id;
 	}
 
 	public itemId getItem() {
-		return item;
+		return itemId;
 	}
-	public void setItem(itemId item) {
-		this.item = item;
+	public void setItem(itemId itemId) {
+		this.itemId = itemId;
 	}
 	public String getType() {
 		return type;
@@ -94,11 +107,11 @@ public class ItemBoundary {
 	public void setLocation(location location) {
 		this.location = location;
 	}
-	public itemAttributes getItemAtt() {
-		return itemAtt;
+	public itemAttributes getItemAttributes() {
+		return itemAttributes;
 	}
-	public void setItemAtt(itemAttributes itemAtt) {
-		this.itemAtt = itemAtt;
+	public void setItemAtt(itemAttributes itemAttributes) {
+		this.itemAttributes = itemAttributes;
 	}
 	
 }
