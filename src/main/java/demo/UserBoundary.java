@@ -10,7 +10,7 @@ package demo;
 //"arrayOfCars":{cars} *********
 //}
 public class UserBoundary {
-	private userIdBoundary userId;
+	private userId userId;
 	private String role;
 	private String username;
 	private String avatar;
@@ -18,7 +18,7 @@ public class UserBoundary {
 	public UserBoundary() {
 	}
 
-	public UserBoundary(userIdBoundary userId, String role, String username,String avatar) {
+	public UserBoundary(userId userId, String role, String username,String avatar) {
 		super();
 		this.userId = userId;
 		this.role = role;
@@ -26,11 +26,11 @@ public class UserBoundary {
 		this.avatar = avatar;
 	}
 
-	public userIdBoundary getUserId() {
+	public userId getUserId() {
 		return userId;
 	}
 
-	public void setUserId(userIdBoundary userId) {
+	public void setUserId(userId userId) {
 		this.userId = userId;
 	}
 

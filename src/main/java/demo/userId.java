@@ -5,15 +5,15 @@ package demo;
 //"email":"user@demo.com"
 //}
 
-public class userIdBoundary {
+public class userId {
 	
 	private String space;
 	private String email;
 
-	public userIdBoundary() {
+	public userId() {
 	}
 
-	public userIdBoundary(String space, String email) {
+	public userId(String space, String email) {
 		super();
 		this.space = space;
 		this.email = email;

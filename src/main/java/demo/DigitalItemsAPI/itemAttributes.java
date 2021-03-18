@@ -1,6 +1,5 @@
-package demo;
+package demo.DigitalItemsAPI;
 
-import java.util.HashMap;
 import java.util.Map;
 
 //"key1":"can be set to any value you wish",
@@ -11,7 +10,12 @@ public class itemAttributes {
 	private Map<String, Object> map;
 	
 	public itemAttributes() {
-		this.setMap(new HashMap<>());
+		
+	}
+	
+	public itemAttributes(Map<String, Object> map) {
+		super();
+		this.map = map;
 	}
 
 	public Map<String, Object> getMap() {

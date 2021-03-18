@@ -1,4 +1,4 @@
-package demo;
+package demo.DigitalItemsAPI;
 import java.util.Date;
 
 /*"itemId":{
@@ -27,13 +27,12 @@ import java.util.Date;
 } */
 public class ItemBoundary {
 	
-	private static long id = 1;
 	private itemId itemId;
 	private String type;
 	private String name;
 	private Boolean active;
 	private Date createdTimestamp;
-	private createdBy maker;
+	private createdBy createdBy;
 	private location location;
 	private itemAttributes itemAttributes;
 	
@@ -41,34 +40,23 @@ public class ItemBoundary {
 	
 	}
 	
-	public ItemBoundary(itemId itemId, String type, String name, Boolean active, Date createdTimestamp, createdBy maker,
-			demo.location location, itemAttributes itemAttributes) {
+	public ItemBoundary(itemId itemId, String type, String name, Boolean active, Date createdTimestamp, createdBy createdBy,
+			location location, itemAttributes itemAttributes) {
 		super();
-		this.itemId = new itemId(this.itemId.getSpace(),id++);
+		this.itemId = itemId;
 		this.type = type;
 		this.name = name;
 		this.active = active;
 		this.createdTimestamp = createdTimestamp;
-		this.maker = maker;
+		this.createdBy = createdBy;
 		this.location = location;
 		this.itemAttributes = itemAttributes;
 	}
 
-	public static void newId() {
-		ItemBoundary.id = id++;
-	}
-	public static long getId() {
-		return id;
-	}
-
-	public static void setId(long id) {
-		ItemBoundary.id = id;
-	}
-
-	public itemId getItem() {
+	public itemId getItemId() {
 		return itemId;
 	}
-	public void setItem(itemId itemId) {
+	public void setItemId(itemId itemId) {
 		this.itemId = itemId;
 	}
 	public String getType() {
@@ -95,11 +83,11 @@ public class ItemBoundary {
 	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
 	}
-	public createdBy getMaker() {
-		return maker;
+	public createdBy getCreatedBy() {
+		return createdBy;
 	}
-	public void setMaker(createdBy maker) {
-		this.maker = maker;
+	public void setCreatedBy(createdBy createdBy) {
+		this.createdBy = createdBy;
 	}
 	public location getLocation() {
 		return location;
@@ -110,7 +98,7 @@ public class ItemBoundary {
 	public itemAttributes getItemAttributes() {
 		return itemAttributes;
 	}
-	public void setItemAtt(itemAttributes itemAttributes) {
+	public void setItemAttributes(itemAttributes itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
 	

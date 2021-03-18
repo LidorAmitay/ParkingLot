@@ -1,4 +1,4 @@
-package demo;
+package demo.DigitalItemsAPI;
 //	"lat":32.115139,
 //	"lng":34.817804
 public class location {
