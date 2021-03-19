@@ -12,6 +12,6 @@ public class HelloController {
 		method = RequestMethod.GET, 
 		produces = MediaType.APPLICATION_JSON_VALUE)
 	public MessageBoundary hello () {
-		return new MessageBoundary("hello world");
+		return new MessageBoundary("hello world", "Amos Leader");
 	}
 }

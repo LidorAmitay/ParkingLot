@@ -17,8 +17,8 @@ public class DigitalAPIController {
 	@RequestMapping(
 		path = "/twins/items/{userSpace}/{userEmail}", 
 		method = RequestMethod.POST, 
-		produces = MediaType.APPLICATION_JSON_VALUE,
-		consumes = MediaType.APPLICATION_JSON_VALUE)
+		produces = MediaType.APPLICATION_JSON_VALUE,//Output
+		consumes = MediaType.APPLICATION_JSON_VALUE)//Input
 	public ItemBoundary createNewItem (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email,@RequestBody ItemBoundary item) {
 		item.setItemId(new itemId("2021b.item",itemId.newId()));
 		System.err.println("(STUB) successfully written item data to database  " + "id : " + item.getItemId().getId());
