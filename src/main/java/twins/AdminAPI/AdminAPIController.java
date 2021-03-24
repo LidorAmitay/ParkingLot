@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import twins.UserBoundary;
-import twins.UserId;
 import twins.DigitalItemsAPI.ItemId;
 import twins.OperationsAPI.InvokedBy;
 import twins.OperationsAPI.Item;
 import twins.OperationsAPI.OperationAttributes;
 import twins.OperationsAPI.OperationBoundary;
 import twins.OperationsAPI.OperationId;
+import twins.UserAPI.UserBoundary;
+import twins.UserAPI.UserId;
 
 
 @RestController
