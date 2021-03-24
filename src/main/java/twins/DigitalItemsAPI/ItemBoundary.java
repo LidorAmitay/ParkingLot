@@ -1,4 +1,4 @@
-package demo.DigitalItemsAPI;
+package twins.DigitalItemsAPI;
 import java.util.Date;
 
 /*"itemId":{
@@ -27,21 +27,21 @@ import java.util.Date;
 } */
 public class ItemBoundary {
 	
-	private itemId itemId;
+	private ItemId itemId;
 	private String type;
 	private String name;
 	private Boolean active;
 	private Date createdTimestamp;
-	private createdBy createdBy;
-	private location location;
-	private itemAttributes itemAttributes;
+	private CreatedBy createdBy;
+	private Location location;
+	private ItemAttributes itemAttributes;
 	
 	public ItemBoundary() {
 	
 	}
 	
-	public ItemBoundary(itemId itemId, String type, String name, Boolean active, Date createdTimestamp, createdBy createdBy,
-			location location, itemAttributes itemAttributes) {
+	public ItemBoundary(ItemId itemId, String type, String name, Boolean active, Date createdTimestamp, CreatedBy createdBy,
+			Location location, ItemAttributes itemAttributes) {
 		super();
 		this.itemId = itemId;
 		this.type = type;
@@ -53,10 +53,10 @@ public class ItemBoundary {
 		this.itemAttributes = itemAttributes;
 	}
 
-	public itemId getItemId() {
+	public ItemId getItemId() {
 		return itemId;
 	}
-	public void setItemId(itemId itemId) {
+	public void setItemId(ItemId itemId) {
 		this.itemId = itemId;
 	}
 	public String getType() {
@@ -83,22 +83,22 @@ public class ItemBoundary {
 	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
 	}
-	public createdBy getCreatedBy() {
+	public CreatedBy getCreatedBy() {
 		return createdBy;
 	}
-	public void setCreatedBy(createdBy createdBy) {
+	public void setCreatedBy(CreatedBy createdBy) {
 		this.createdBy = createdBy;
 	}
-	public location getLocation() {
+	public Location getLocation() {
 		return location;
 	}
-	public void setLocation(location location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
-	public itemAttributes getItemAttributes() {
+	public ItemAttributes getItemAttributes() {
 		return itemAttributes;
 	}
-	public void setItemAttributes(itemAttributes itemAttributes) {
+	public void setItemAttributes(ItemAttributes itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
 	

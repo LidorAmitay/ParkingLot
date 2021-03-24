@@ -1,4 +1,4 @@
-package demo.DigitalItemsAPI;
+package twins.DigitalItemsAPI;
 
 import java.util.Map;
 
@@ -6,14 +6,14 @@ import java.util.Map;
 //"key2":"you can also name the attributes any name you like",
 //"key3":58,
 //"key4":false
-public class itemAttributes {
+public class ItemAttributes {
 	private Map<String, Object> map;
 	
-	public itemAttributes() {
+	public ItemAttributes() {
 		
 	}
 	
-	public itemAttributes(Map<String, Object> map) {
+	public ItemAttributes(Map<String, Object> map) {
 		super();
 		this.map = map;
 	}

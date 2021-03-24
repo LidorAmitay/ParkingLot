@@ -1,4 +1,4 @@
-package demo;
+package twins;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ public class UsersAPIController {
 		
 		public UserBoundary insertUserDataToDatabase (@RequestBody NewUserDetails user) {
 			System.err.println("(STUB) successfully written user data to database");
-			return new UserBoundary(new userId("2021b.twins",user.getEmail()),user.getRole(),user.getUsername(),user.getAvatar());
+			return new UserBoundary(new UserId("2021b.twins",user.getEmail()),user.getRole(),user.getUsername(),user.getAvatar());
 		}
 		
 		@RequestMapping(
@@ -27,7 +27,7 @@ public class UsersAPIController {
 			
 			public UserBoundary loginUserAndRetrieve (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email) {
 				System.err.println("(STUB) successfully login user ");
-				return new UserBoundary(new userId(space,email),"Team Leader","Tal Goldengoren","T");
+				return new UserBoundary(new UserId(space,email),"Team Leader","Tal Goldengoren","T");
 			}
 		
 		@RequestMapping(

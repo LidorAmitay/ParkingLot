@@ -1,13 +1,13 @@
-package demo.DigitalItemsAPI;
+package twins.DigitalItemsAPI;
 //	"lat":32.115139,
 //	"lng":34.817804
-public class location {
+public class Location {
 	
 	private Double lat;
 	private Double lng;
-	public location() {
+	public Location() {
 	}
-	public location(Double lat, Double lng) {
+	public Location(Double lat, Double lng) {
 		super();
 		this.lat = lat;
 		this.lng = lng;

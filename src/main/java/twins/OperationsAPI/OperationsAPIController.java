@@ -1,4 +1,4 @@
-package demo.OperationsAPI;
+package twins.OperationsAPI;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +31,7 @@ public class OperationsAPIController {
 			produces = MediaType.APPLICATION_JSON_VALUE,//Output
 			consumes = MediaType.APPLICATION_JSON_VALUE)//Input
 		public Object ASynchronousOperation (@RequestBody OperationBoundary operation) {
-			operation.setOperationId(new operationId("2021b.operation", operationId.newId()));
+			operation.setOperationId(new OperationId("2021b.operation", "1234"));
 			System.err.println("(STUB) successfully A-Synchronous operation " + operation.getOperationId());
 			return operation;
 		}

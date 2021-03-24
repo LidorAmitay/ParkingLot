@@ -1,16 +1,16 @@
-package demo.OperationsAPI;
+package twins.OperationsAPI;
 
 import java.util.Map;
 
-public class operationAttributes {
+public class OperationAttributes {
 	
-private Map<String, Object> map;
+	private Map<String, Object> map;
 	
-	public operationAttributes() {
+	public OperationAttributes() {
 		
 	}
 	
-	public operationAttributes(Map<String, Object> map) {
+	public OperationAttributes(Map<String, Object> map) {
 		super();
 		this.map = map;
 	}

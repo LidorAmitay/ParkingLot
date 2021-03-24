@@ -1,4 +1,4 @@
-package demo.OperationsAPI;
+package twins.OperationsAPI;
 
 import java.util.Date;
 
@@ -31,37 +31,37 @@ import java.util.Date;
 }*/
 public class OperationBoundary {
 	
-	private operationId operationId;
+	private OperationId operationId;
 	private String type;
-	private item item;
-	private Date createTimestamp;
-	private invokedBy invokedBy;
-	private operationAttributes operationAttributes;
+	private Item item;
+	private Date createdTimestamp;
+	private InvokedBy invokedBy;
+	private OperationAttributes operationAttributes;
 	
 	
 	public OperationBoundary() {	
 	}
 	
-	public OperationBoundary(operationId operationId, String type,
-			item item, Date createTimestamp, invokedBy invokedBy,
-			operationAttributes operationAttributes) {
+	public OperationBoundary(OperationId operationId, String type,
+			Item item, Date createTimestamp, InvokedBy invokedBy,
+			OperationAttributes operationAttributes) {
 		super();
 		this.operationId = operationId;
 		this.type = type;
 		this.item = item;
-		this.createTimestamp = createTimestamp;
+		this.createdTimestamp = createTimestamp;
 		this.invokedBy = invokedBy;
 		this.operationAttributes = operationAttributes;
 	}
 
 
 
-	public operationId getOperationId() {
+	public OperationId getOperationId() {
 		return operationId;
 	}
 
 
-	public void setOperationId(operationId operationId) {
+	public void setOperationId(OperationId operationId) {
 		this.operationId = operationId;
 	}
 
@@ -76,43 +76,43 @@ public class OperationBoundary {
 	}
 
 
-	public item getItem() {
+	public Item getItem() {
 		return item;
 	}
 
 
-	public void setItem(item item) {
+	public void setItem(Item item) {
 		this.item = item;
 	}
 
 	
 	public Date getCreateTimestamp() {
-		return createTimestamp;
+		return createdTimestamp;
 	}
 
 	public void setCreateTimestamp(Date createTimestamp) {
-		this.createTimestamp = createTimestamp;
+		this.createdTimestamp = createTimestamp;
 	}
 
-	public invokedBy getInvokedBy() {
+	public InvokedBy getInvokedBy() {
 		return invokedBy;
 	}
 
 
 
-	public void setInvokedBy(invokedBy invokedBy) {
+	public void setInvokedBy(InvokedBy invokedBy) {
 		this.invokedBy = invokedBy;
 	}
 
 
 
-	public operationAttributes getOperationAttributes() {
+	public OperationAttributes getOperationAttributes() {
 		return operationAttributes;
 	}
 
 
 
-	public void setOperationAttributes(operationAttributes operationAttributes) {
+	public void setOperationAttributes(OperationAttributes operationAttributes) {
 		this.operationAttributes = operationAttributes;
 	}
 	

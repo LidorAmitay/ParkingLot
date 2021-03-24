@@ -1,4 +1,4 @@
-package demo;
+package twins;
 
 //{
 //"clientID":"1",
@@ -10,7 +10,7 @@ package demo;
 //"arrayOfCars":{cars} *********
 //}
 public class UserBoundary {
-	private userId userId;
+	private UserId userId;
 	private String role;
 	private String username;
 	private String avatar;
@@ -18,7 +18,7 @@ public class UserBoundary {
 	public UserBoundary() {
 	}
 
-	public UserBoundary(userId userId, String role, String username,String avatar) {
+	public UserBoundary(UserId userId, String role, String username,String avatar) {
 		super();
 		this.userId = userId;
 		this.role = role;
@@ -26,11 +26,11 @@ public class UserBoundary {
 		this.avatar = avatar;
 	}
 
-	public userId getUserId() {
+	public UserId getUserId() {
 		return userId;
 	}
 
-	public void setUserId(userId userId) {
+	public void setUserId(UserId userId) {
 		this.userId = userId;
 	}
 

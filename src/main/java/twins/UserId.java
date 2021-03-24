@@ -1,19 +1,19 @@
-package demo;
+package twins;
 
 //{
 //"space":"2021b.twins",
 //"email":"user@demo.com"
 //}
 
-public class userId {
+public class UserId {
 	
 	private String space;
 	private String email;
 
-	public userId() {
+	public UserId() {
 	}
 
-	public userId(String space, String email) {
+	public UserId(String space, String email) {
 		super();
 		this.space = space;
 		this.email = email;
