@@ -1,4 +1,4 @@
-package twins.DigitalItemsAPI;
+package twins.digitalItemsAPI;
 //	"lat":32.115139,
 //	"lng":34.817804
 public class Location {

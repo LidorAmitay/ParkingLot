@@ -1,6 +1,6 @@
-package twins.OperationsAPI;
+package twins.operationsAPI;
 
-import twins.DigitalItemsAPI.ItemId;
+import twins.digitalItemsAPI.ItemId;
 
 public class Item {
 	private ItemId itemid;

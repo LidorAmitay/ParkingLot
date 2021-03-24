@@ -1,4 +1,4 @@
-package twins.DigitalItemsAPI;
+package twins.digitalItemsAPI;
 
 import java.util.Map;
 

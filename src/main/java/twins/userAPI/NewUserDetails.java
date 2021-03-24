@@ -1,4 +1,4 @@
-package twins.UserAPI;
+package twins.userAPI;
 
 
 public class NewUserDetails {

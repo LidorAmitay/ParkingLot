@@ -1,6 +1,6 @@
-package twins.DigitalItemsAPI;
+package twins.digitalItemsAPI;
 
-import twins.UserAPI.UserId;
+import twins.userAPI.UserId;
 
 //"user":{
 //			"space":"2021b.twins",

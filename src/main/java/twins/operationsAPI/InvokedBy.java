@@ -1,6 +1,6 @@
-package twins.OperationsAPI;
+package twins.operationsAPI;
 
-import twins.UserAPI.UserId;
+import twins.userAPI.UserId;
 
 public class InvokedBy {
 	private UserId userId;
@@ -9,7 +9,7 @@ public class InvokedBy {
 		
 	}
 
-	public InvokedBy(twins.UserAPI.UserId userId) {
+	public InvokedBy(twins.userAPI.UserId userId) {
 		super();
 		this.userId = userId;
 	}

@@ -1,4 +1,4 @@
-package twins.UserAPI;
+package twins.userAPI;
 
 //{
 //"clientID":"1",

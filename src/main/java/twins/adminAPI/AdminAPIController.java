@@ -1,4 +1,4 @@
-package twins.AdminAPI;
+package twins.adminAPI;
 
 import java.util.Date;
 
@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import twins.DigitalItemsAPI.ItemId;
-import twins.OperationsAPI.InvokedBy;
-import twins.OperationsAPI.Item;
-import twins.OperationsAPI.OperationAttributes;
-import twins.OperationsAPI.OperationBoundary;
-import twins.OperationsAPI.OperationId;
-import twins.UserAPI.UserBoundary;
-import twins.UserAPI.UserId;
+import twins.digitalItemsAPI.ItemId;
+import twins.operationsAPI.InvokedBy;
+import twins.operationsAPI.Item;
+import twins.operationsAPI.OperationAttributes;
+import twins.operationsAPI.OperationBoundary;
+import twins.operationsAPI.OperationId;
+import twins.userAPI.UserBoundary;
+import twins.userAPI.UserId;
 
 
 @RestController

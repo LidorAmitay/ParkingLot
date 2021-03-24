@@ -1,4 +1,4 @@
-package twins.DigitalItemsAPI;
+package twins.digitalItemsAPI;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import twins.UserAPI.UserId;
+import twins.userAPI.UserId;
 
 @RestController
 public class DigitalAPIController {
