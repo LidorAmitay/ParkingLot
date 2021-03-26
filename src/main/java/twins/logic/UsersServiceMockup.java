@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service;
 
 import twins.data.EntityConverter;
 import twins.data.UserEntity;
-import twins.userAPI.NewUserDetails;
 import twins.userAPI.UserBoundary;
-import twins.userAPI.UserId;
+
 
 
 @Service
@@ -21,6 +20,8 @@ public class UsersServiceMockup implements UsersService{
 	
 	private Map<String, UserEntity> users;
 	private EntityConverter entityConverter;
+	
+	//Constructor
 	public UsersServiceMockup(EntityConverter entityConverter) {
 		super();
 		this.users = Collections.synchronizedMap(new HashMap<>());

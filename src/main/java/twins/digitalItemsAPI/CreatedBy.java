@@ -4,7 +4,8 @@ import twins.userAPI.UserId;
 
 //"user":{
 //			"space":"2021b.twins",
-//			"email":"user2@demo.com" } 
+//			"email":"user2@demo.com" 
+//} 
 public class CreatedBy {
 	
 	private UserId userId;
