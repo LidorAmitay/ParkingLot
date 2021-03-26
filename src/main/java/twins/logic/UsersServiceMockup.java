@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import twins.data.EntityConverter;
 import twins.data.UserEntity;
+import twins.data.UserRole;
 import twins.userAPI.UserBoundary;
 
 
@@ -18,6 +20,8 @@ import twins.userAPI.UserBoundary;
 @Service
 public class UsersServiceMockup implements UsersService{
 	
+	@Value("${spring.application.name}")
+	private String appName;
 	private Map<String, UserEntity> users;
 	private EntityConverter entityConverter;
 	
@@ -34,7 +38,14 @@ public class UsersServiceMockup implements UsersService{
 	
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
+		try {
+		       UserRole temp = UserRole.valueOf(user.getRole());
+		    } catch (IllegalArgumentException ex) {  
+		    	throw new RuntimeException("could not create user by role: " +user.getRole());
+		  }
+
 		UserEntity entity = this.entityConverter.fromBoundary(user);
+		entity.setSpace(appName+"_"+entity.getEmail());
 		this.users.put(entity.getEmail(), entity);
 		return this.entityConverter.toBoundary(entity);
 	}
@@ -57,7 +68,11 @@ public class UsersServiceMockup implements UsersService{
 		
 		if(entity != null) {
 			entity.setAvatar(update.getAvatar());
-			entity.setRole(update.getRole());
+			try {
+			       UserRole temp = UserRole.valueOf(entity.getRole());
+			       entity.setRole(update.getRole());
+			       
+			    } catch (IllegalArgumentException ex) {}
 			entity.setUsername(update.getUsername());
 			return update;
 		} else {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import twins.data.UserRole;
 import twins.logic.UsersService;
 
 @RestController
@@ -37,8 +38,8 @@ public class UsersAPIController {
 			 * */
 			
 			UserBoundary ub = new UserBoundary(new UserId("2021b.twins",user.getEmail()),user.getRole(),user.getUsername(),user.getAvatar());
-			userService.createUser(ub);
-			return ub;
+			return userService.createUser(ub);
+			
 		}
 		
 		@RequestMapping(
@@ -56,7 +57,7 @@ public class UsersAPIController {
 				consumes = MediaType.APPLICATION_JSON_VALUE)
 			
 			public void updateUser (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email,@RequestBody UserBoundary user) {
-				System.err.println("(STUB) successfully updated user in the database");
+				this.userService.updateUser(space, email, user);
 			}
 		
 		

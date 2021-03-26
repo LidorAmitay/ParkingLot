@@ -1,5 +1,7 @@
 package twins.userAPI;
 
+import twins.data.UserRole;
+
 //{
 //"clientID":"1",
 //"firstName":"Jane",
@@ -14,11 +16,11 @@ public class UserBoundary {
 	private String role;
 	private String username;
 	private String avatar;
-	
+
 	public UserBoundary() {
 	}
 
-	public UserBoundary(UserId userId, String role, String username,String avatar) {
+	public UserBoundary(UserId userId, String role, String username, String avatar) {
 		super();
 		this.userId = userId;
 		this.role = role;
@@ -58,5 +60,3 @@ public class UserBoundary {
 		this.avatar = avatar;
 	}
 }
-	
-	

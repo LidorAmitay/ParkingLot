@@ -13,14 +13,14 @@ import twins.data.ItemEntity;
 import twins.digitalItemsAPI.ItemBoundary;
 
 @Service
-public class ItemsServiceMochup implements ItemsService {
+public class ItemsServiceMockup implements ItemsService {
 	
 	private Map<String, ItemEntity> items;
 	private EntityConverter entityConverter;
 	
 	
 	
-	public ItemsServiceMochup(Map<String, ItemEntity> items) {
+	public ItemsServiceMockup(Map<String, ItemEntity> items) {
 		super();
 		this.items = items;
 	}
