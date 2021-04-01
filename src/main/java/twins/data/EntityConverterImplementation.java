@@ -2,16 +2,20 @@ package twins.data;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;
 import twins.digitalItemsAPI.ItemId;
 import twins.digitalItemsAPI.Location;
+import twins.operationsAPI.Item;
+import twins.operationsAPI.OperationBoundary;
+import twins.operationsAPI.OperationId;
 import twins.userAPI.UserBoundary;
 import twins.userAPI.UserId;
 
-@Service
+@Component //*** component or service?
 public class EntityConverterImplementation implements EntityConverter{
 
 	@Override
@@ -65,6 +69,34 @@ public class EntityConverterImplementation implements EntityConverter{
 		ie.setSpace(boundary.getCreatedBy().getUserId().getSpace());
 		ie.setType(boundary.getType());
 		return ie;
+	}
+
+	@Override
+	public OperationBoundary toOperationBoundary(OperationEntity entity) {
+		OperationBoundary rv = new OperationBoundary();
+		rv.setCreateTimestamp(entity.getCreatedTimestamp());
+		rv.setInvokedBy(entity.getInvokedBy());
+		rv.setItem(new Item(new ItemId(entity.getItemSpace(),entity.getItemId())));
+		rv.setOperationAttributes(entity.getOperationAttributes());
+		rv.setOperationId(new OperationId(entity.getOperationSpace(),entity.getOperationId()));
+		rv.setType(entity.getType());
+		return rv;
+	}
+
+	@Override
+	public OperationEntity fromOperationBoundary(OperationBoundary boundary) {
+		OperationEntity rv = new OperationEntity();
+		rv.setCreatedTimestamp(boundary.getCreateTimestamp());
+		rv.setInvokedBy(boundary.getInvokedBy());
+		rv.setItemId(boundary.getItem().getItemid().getId());
+		rv.setItemSpace(boundary.getItem().getItemid().getSpace());
+		rv.setOperationAttributes(boundary.getOperationAttributes());
+		rv.setOperationId(boundary.getOperationId().getId());
+		rv.setOperationSpace(boundary.getOperationId().getSpace());
+		rv.setType(boundary.getType());
+		
+		
+		return rv;
 	}
 	
 	
