@@ -1,11 +1,13 @@
 package twins.logic;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import twins.data.EntityConverter;
@@ -15,6 +17,8 @@ import twins.digitalItemsAPI.ItemBoundary;
 @Service
 public class ItemsServiceMockup implements ItemsService {
 	
+	@Value("${spring.application.name}")
+	private String appName;
 	private Map<String, ItemEntity> items;
 	private EntityConverter entityConverter;
 	
@@ -29,9 +33,17 @@ public class ItemsServiceMockup implements ItemsService {
 	@Override
 	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) {
 		ItemEntity ie = this.entityConverter.fromBoundary(item); 
+		if(item.getLocation() == null)
+			throw new RuntimeException("could not create an item with null location ");// NullPointerException
+		
+		else if(item.getLocation().getLat() == null || item.getLocation().getLng() == null)
+			throw new RuntimeException("could not create an item with null location ");// NullPointerException
+	
 		ie.setId(UUID.randomUUID().toString());
-		ie.setSpace(userSpace);
+		ie.setItemSpace(appName); //maybe need to add id to space
+		ie.setUserSpace(userSpace);
 		ie.setEmail(userEmail);
+		ie.setCreatedTimestamp(new Date());
 		this.items.put(ie.getId(), ie);
 		return this.entityConverter.toBoundary(ie);
 	}
@@ -44,8 +56,6 @@ public class ItemsServiceMockup implements ItemsService {
 		
 		if(entity != null) {
 			entity.setActive(update.getActive());
-			entity.setCreatedTimestamp(update.getCreatedTimestamp());
-			entity.setEmail(userEmail);
 			entity.setLat(update.getLocation().getLat());
 			entity.setLng(update.getLocation().getLng());
 			entity.setName(update.getName());

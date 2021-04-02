@@ -5,7 +5,8 @@ import java.util.Date;
 
 public class ItemEntity {
 	
-	private String space;
+	private String itemSpace;
+	private String userSpace;
 	private String email;
 	private String id;
 	private String type;
@@ -26,15 +27,32 @@ public class ItemEntity {
 	public ItemEntity() {
 	}
 	
-	public String getSpace() {
-		return space;
+	
+	
+	public String getItemSpace() {
+		return itemSpace;
 	}
-	
-	
-	public void setSpace(String space) {
-		this.space = space;
+
+
+
+	public void setItemSpace(String itemSpace) {
+		this.itemSpace = itemSpace;
 	}
-	
+
+
+
+	public String getUserSpace() {
+		return userSpace;
+	}
+
+
+
+	public void setUserSpace(String userSpace) {
+		this.userSpace = userSpace;
+	}
+
+
+
 	public String getEmail() {
 		return email;
 	}

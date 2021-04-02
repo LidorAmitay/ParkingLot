@@ -45,10 +45,10 @@ public class EntityConverterImplementation implements EntityConverter{
 	public ItemBoundary toBoundary(ItemEntity entity) {
 		ItemBoundary ib = new ItemBoundary();
 		ib.setActive(entity.getActive());
-		ib.setCreatedBy(new CreatedBy(new UserId(entity.getSpace(), entity.getEmail())) );
+		ib.setCreatedBy(new CreatedBy(new UserId(entity.getUserSpace(), entity.getEmail())) );
 		ib.setCreatedTimestamp(new Date());
 		//ib.setItemAttributes(entity.getActive());
-		ib.setItemId(new ItemId(entity.getSpace(), entity.getId()));
+		ib.setItemId(new ItemId(entity.getItemSpace(), entity.getId()));
 		ib.setLocation(new Location(entity.getLat(), entity.getLng()));
 		ib.setName(entity.getName());
 		ib.setType(entity.getType());
@@ -66,13 +66,14 @@ public class EntityConverterImplementation implements EntityConverter{
 		ie.setLat(boundary.getLocation().getLat());
 		ie.setLng(boundary.getLocation().getLng());
 		ie.setName(boundary.getName());
-		ie.setSpace(boundary.getCreatedBy().getUserId().getSpace());
+		ie.setItemSpace(boundary.getItemId().getSpace());
+		ie.setUserSpace(boundary.getCreatedBy().getUserId().getSpace());
 		ie.setType(boundary.getType());
 		return ie;
 	}
 
 	@Override
-	public OperationBoundary toOperationBoundary(OperationEntity entity) {
+	public OperationBoundary toBoundary(OperationEntity entity) {
 		OperationBoundary rv = new OperationBoundary();
 		rv.setCreateTimestamp(entity.getCreatedTimestamp());
 		rv.setInvokedBy(entity.getInvokedBy());
@@ -84,7 +85,7 @@ public class EntityConverterImplementation implements EntityConverter{
 	}
 
 	@Override
-	public OperationEntity fromOperationBoundary(OperationBoundary boundary) {
+	public OperationEntity fromBoundary(OperationBoundary boundary) {
 		OperationEntity rv = new OperationEntity();
 		rv.setCreatedTimestamp(boundary.getCreateTimestamp());
 		rv.setInvokedBy(boundary.getInvokedBy());

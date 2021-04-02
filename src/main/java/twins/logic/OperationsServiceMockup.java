@@ -29,16 +29,16 @@ public class OperationsServiceMockup implements OperationsService{
 	@Override
 	public Object invokeOperations(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
-		OperationEntity entity = this.entityConvert.fromOperationBoundary(operation);
+		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		entity.setOperationId(newId);
 		this.operationsMap.put(newId, entity);
-		return null;
+		return operation;
 	}
 
 	@Override
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
-		OperationEntity entity = this.entityConvert.fromOperationBoundary(operation);
+		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		entity.setOperationId(newId);
 		this.operationsMap.put(newId, entity);
 		return operation;
@@ -47,7 +47,7 @@ public class OperationsServiceMockup implements OperationsService{
 	@Override
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
 		// TODO Auto-generated method stub
-		return this.operationsMap.values().stream().map(this.entityConvert::toOperationBoundary).collect(Collectors.toList());
+		return this.operationsMap.values().stream().map(this.entityConvert::toBoundary).collect(Collectors.toList());
 	}
 
 	@Override

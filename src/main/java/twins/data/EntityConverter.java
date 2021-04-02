@@ -14,9 +14,9 @@ public interface EntityConverter {
 
 	public ItemEntity fromBoundary(ItemBoundary boundary);
 	 
-	public OperationBoundary toOperationBoundary(OperationEntity entity);
+	public OperationBoundary toBoundary(OperationEntity entity);
 
-    public OperationEntity fromOperationBoundary(OperationBoundary boundary);
+    public OperationEntity fromBoundary(OperationBoundary boundary);
 	
 
 }
