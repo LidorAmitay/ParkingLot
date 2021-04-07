@@ -9,7 +9,9 @@ import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;
 import twins.digitalItemsAPI.ItemId;
 import twins.digitalItemsAPI.Location;
+import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
+import twins.operationsAPI.OperationAttributes;
 import twins.operationsAPI.OperationBoundary;
 import twins.operationsAPI.OperationId;
 import twins.userAPI.UserBoundary;
@@ -76,10 +78,10 @@ public class EntityConverterImplementation implements EntityConverter{
 	public OperationBoundary toBoundary(OperationEntity entity) {
 		OperationBoundary rv = new OperationBoundary();
 		rv.setCreateTimestamp(entity.getCreatedTimestamp());
-		rv.setInvokedBy(entity.getInvokedBy());
-		rv.setItem(new Item(new ItemId(entity.getItemSpace(),entity.getItemId())));
-		rv.setOperationAttributes(entity.getOperationAttributes());
-		rv.setOperationId(new OperationId(entity.getOperationSpace(),entity.getOperationId()));
+		rv.setInvokedBy(new InvokedBy(new UserId(entity.getInvokedBySpaceEmail().split("@@")[0],entity.getInvokedBySpaceEmail().split("@@")[1])));
+		rv.setItem(new Item(new ItemId(entity.getItemSpaceId().split("@@")[0],entity.getItemSpaceId().split("@@")[1])));
+		rv.setOperationAttributes(new OperationAttributes(entity.getOperationAttributesMap()));
+		rv.setOperationId(new OperationId(entity.getOperationSpaceId().split("@@")[0],entity.getOperationSpaceId().split("@@")[1]));
 		rv.setType(entity.getType());
 		return rv;
 	}
@@ -88,17 +90,15 @@ public class EntityConverterImplementation implements EntityConverter{
 	public OperationEntity fromBoundary(OperationBoundary boundary) {
 		OperationEntity rv = new OperationEntity();
 		rv.setCreatedTimestamp(boundary.getCreateTimestamp());
-		rv.setInvokedBy(boundary.getInvokedBy());
-		rv.setItemId(boundary.getItem().getItemid().getId());
-		rv.setItemSpace(boundary.getItem().getItemid().getSpace());
-		rv.setOperationAttributes(boundary.getOperationAttributes());
-		rv.setOperationId(boundary.getOperationId().getId());
-		rv.setOperationSpace(boundary.getOperationId().getSpace());
+		rv.setInvokedBySpaceEmail(boundary.getInvokedBy().getUserId().getSpace() + "@@" + boundary.getInvokedBy().getUserId().getEmail() );
+		rv.setItemSpaceId(boundary.getItem().getItemid().getSpace() + "@@" + boundary.getItem().getItemid().getId());
+		rv.setOperationAttributesMap(boundary.getOperationAttributes().getMap());
+		rv.setOperationSpaceId(boundary.getOperationId().getSpace() + "@@" + boundary.getOperationId().getId());
 		rv.setType(boundary.getType());
 		
 		
 		return rv;
 	}
-	
+
 	
 }
