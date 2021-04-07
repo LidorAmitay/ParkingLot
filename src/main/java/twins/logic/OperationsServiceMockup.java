@@ -30,7 +30,7 @@ public class OperationsServiceMockup implements OperationsService{
 	public Object invokeOperations(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
-		entity.setOperationId(newId);
+		entity.setOperationSpaceId(newId);
 		this.operationsMap.put(newId, entity);
 		return operation;
 	}
@@ -39,9 +39,9 @@ public class OperationsServiceMockup implements OperationsService{
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
-		entity.setOperationId(newId);
+		entity.setOperationSpaceId(newId);
 		this.operationsMap.put(newId, entity);
-		return operation;
+		return this.entityConvert.toBoundary(entity);
 	}
 
 	@Override

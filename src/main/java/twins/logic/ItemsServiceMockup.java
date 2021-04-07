@@ -55,11 +55,19 @@ public class ItemsServiceMockup implements ItemsService {
 		ItemEntity entity = this.items.get(itemId);
 		
 		if(entity != null) {
-			entity.setActive(update.getActive());
-			entity.setLat(update.getLocation().getLat());
-			entity.setLng(update.getLocation().getLng());
-			entity.setName(update.getName());
-			entity.setType(update.getType());
+			if (update.getActive()!=null )
+				entity.setActive(update.getActive());
+			if (update.getLocation()!=null) {
+				if (update.getLocation().getLat()!=null)
+					entity.setLat(update.getLocation().getLat());
+				if (update.getLocation().getLng()!=null)
+					entity.setLng(update.getLocation().getLng());
+			}
+			if (update.getName()!=null)
+				entity.setName(update.getName());
+			if (update.getType()!=null)
+				entity.setType(update.getType());
+	
 			return this.entityConverter.toBoundary(entity);
 		} else {
 			// TODO have server return status 404 here

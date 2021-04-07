@@ -67,14 +67,17 @@ public class UsersServiceMockup implements UsersService{
 		UserEntity entity = this.users.get(userEmail);
 		
 		if(entity != null) {
-			entity.setAvatar(update.getAvatar());
+			if (update.getAvatar()!=null)
+				entity.setAvatar(update.getAvatar());
 			try {
 			       UserRole temp = UserRole.valueOf(entity.getRole());
-			       entity.setRole(update.getRole());
+			       if (update.getRole()!=null)
+			    	   entity.setRole(update.getRole());
 			       
 			    } catch (IllegalArgumentException ex) {}
-			entity.setUsername(update.getUsername());
-			return update;
+			if (update.getUsername()!=null)
+				entity.setUsername(update.getUsername());
+			return this.entityConverter.toBoundary(entity); //previously returned update
 		} else {
 			// TODO have server return status 404 here
 			throw new RuntimeException("could not find user");// NullPointerException
