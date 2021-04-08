@@ -5,7 +5,6 @@ import java.util.Map;
 
 import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
-import twins.operationsAPI.OperationAttributes;
 import twins.operationsAPI.OperationId;
 
 public class OperationEntity {
@@ -15,6 +14,10 @@ public class OperationEntity {
 	private Date createdTimestamp;
 	private String invokedBySpaceEmail;
 	private Map<String, Object> operationAttributesMap;
+	
+	public OperationEntity() {
+	}
+	
 	
 	public String getOperationSpaceId() {
 		return OperationSpaceId;
@@ -64,10 +67,7 @@ public class OperationEntity {
 		this.operationAttributesMap = operationAttributesMap;
 	}
 
-	public OperationEntity() {
-		super();
-	}
-	
+
 
 
 }

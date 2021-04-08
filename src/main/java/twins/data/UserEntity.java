@@ -3,8 +3,7 @@ package twins.data;
 
 public class UserEntity {
 
-	private String space;
-	private String email;
+	private String userId;
 	private String role;
 	private String username;
 	private String avatar;
@@ -13,21 +12,19 @@ public class UserEntity {
 		super();
 	}
 
-	public String getSpace() {
-		return space;
+
+
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setSpace(String space) {
-		this.space = space;
+
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	public String getEmail() {
-		return email;
-	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
 	public String getRole() {
 		return role;

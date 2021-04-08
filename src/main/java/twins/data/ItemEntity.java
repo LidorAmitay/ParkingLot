@@ -1,73 +1,61 @@
 package twins.data;
 
 import java.util.Date;
+import java.util.Map;
 
 
 public class ItemEntity {
 	
-	private String itemSpace;
-	private String userSpace;
-	private String email;
-	private String id;
+	private String itemId;
+	private String userId;
 	private String type;
 	private String name;
 	private boolean active;
 	private Date createdTimestamp;
 	private double lat;
 	private double lng;
-	//private ItemAttributes itemAttributes; what to do with it?
-	
-	/*
-	1) What we have to do with the spaces of the user and the item? it is different?
-	2) What we have to do with the ItemAttributes?
-	*/
-	
+	private Map<String, Object> itemAttributes;
 	
 	//Constructor
 	public ItemEntity() {
 	}
 	
-	
-	
-	public String getItemSpace() {
-		return itemSpace;
+	public Map<String, Object> getItemAttribute() {
+		return itemAttributes;
 	}
 
 
 
-	public void setItemSpace(String itemSpace) {
-		this.itemSpace = itemSpace;
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Map<String, Object> getItemAttributes() {
+		return itemAttributes;
+	}
+
+	public void setItemAttributes(Map<String, Object> itemAttributes) {
+		this.itemAttributes = itemAttributes;
+	}
+
+	public void setItemAttribute(Map<String, Object> itemAttribute) {
+		this.itemAttributes = itemAttribute;
 	}
 
 
 
-	public String getUserSpace() {
-		return userSpace;
-	}
-
-
-
-	public void setUserSpace(String userSpace) {
-		this.userSpace = userSpace;
-	}
-
-
-
-	public String getEmail() {
-		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
 	
 	public String getType() {
 		return type;

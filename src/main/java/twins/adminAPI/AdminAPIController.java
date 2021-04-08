@@ -17,7 +17,6 @@ import twins.logic.UsersService;
 import twins.logic.UsersServiceMockup;
 import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
-import twins.operationsAPI.OperationAttributes;
 import twins.operationsAPI.OperationBoundary;
 import twins.operationsAPI.OperationId;
 import twins.userAPI.UserBoundary;

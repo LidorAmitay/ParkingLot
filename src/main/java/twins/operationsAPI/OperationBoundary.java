@@ -1,6 +1,7 @@
 package twins.operationsAPI;
 
 import java.util.Date;
+import java.util.Map;
 
 
 /*{
@@ -36,7 +37,7 @@ public class OperationBoundary {
 	private Item item;
 	private Date createdTimestamp;
 	private InvokedBy invokedBy;
-	private OperationAttributes operationAttributes;
+	private Map<String,Object> operationAttributes;
 	
 	
 	public OperationBoundary() {	
@@ -44,7 +45,7 @@ public class OperationBoundary {
 	
 	public OperationBoundary(OperationId operationId, String type,
 			Item item, Date createTimestamp, InvokedBy invokedBy,
-			OperationAttributes operationAttributes) {
+			Map<String,Object> operationAttributes) {
 		super();
 		this.operationId = operationId;
 		this.type = type;
@@ -104,17 +105,24 @@ public class OperationBoundary {
 		this.invokedBy = invokedBy;
 	}
 
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
+	}
 
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
+	}
 
-	public OperationAttributes getOperationAttributes() {
+	public Map<String, Object> getOperationAttributes() {
 		return operationAttributes;
 	}
 
-
-
-	public void setOperationAttributes(OperationAttributes operationAttributes) {
+	public void setOperationAttributes(Map<String, Object> operationAttributes) {
 		this.operationAttributes = operationAttributes;
 	}
+
+
+
 	
 	
 }

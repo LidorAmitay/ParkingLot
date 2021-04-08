@@ -11,7 +11,6 @@ import twins.digitalItemsAPI.ItemId;
 import twins.digitalItemsAPI.Location;
 import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
-import twins.operationsAPI.OperationAttributes;
 import twins.operationsAPI.OperationBoundary;
 import twins.operationsAPI.OperationId;
 import twins.userAPI.UserBoundary;
@@ -25,7 +24,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		UserBoundary ub = new UserBoundary();
 		ub.setAvatar(entity.getAvatar());
 		ub.setRole(entity.getRole());
-		ub.setUserId(new UserId(entity.getSpace(), entity.getEmail()));
+		ub.setUserId(new UserId(entity.getUserId().split("@@")[0],entity.getUserId().split("@@")[1]));
 		ub.setUsername(entity.getUsername());
 		
 		return ub;
@@ -35,9 +34,8 @@ public class EntityConverterImplementation implements EntityConverter{
 	public UserEntity fromBoundary(UserBoundary boundary) {
 		UserEntity ue = new UserEntity();
 		ue.setAvatar(boundary.getAvatar());
-		ue.setEmail(boundary.getUserId().getEmail());
+		ue.setUserId(boundary.getUserId().getEmail()+"@@"+boundary.getUserId().getEmail());
 		ue.setRole(boundary.getRole());
-		ue.setSpace(boundary.getUserId().getSpace());
 		ue.setUsername(boundary.getUsername());
 		return ue;
 	}
@@ -47,13 +45,14 @@ public class EntityConverterImplementation implements EntityConverter{
 	public ItemBoundary toBoundary(ItemEntity entity) {
 		ItemBoundary ib = new ItemBoundary();
 		ib.setActive(entity.getActive());
-		ib.setCreatedBy(new CreatedBy(new UserId(entity.getUserSpace(), entity.getEmail())) );
+		ib.setCreatedBy(new CreatedBy(new UserId(entity.getUserId().split("@@")[0],entity.getUserId().split("@@")[1])) );
 		ib.setCreatedTimestamp(new Date());
 		//ib.setItemAttributes(entity.getActive());
-		ib.setItemId(new ItemId(entity.getItemSpace(), entity.getId()));
+		ib.setItemId(new ItemId(entity.getItemId().split("@@")[0],entity.getItemId().split("@@")[1]));
 		ib.setLocation(new Location(entity.getLat(), entity.getLng()));
 		ib.setName(entity.getName());
 		ib.setType(entity.getType());
+		ib.setItemAttributes(entity.getItemAttribute());
 		
 		return ib;
 	}
@@ -63,14 +62,13 @@ public class EntityConverterImplementation implements EntityConverter{
 		ItemEntity ie = new ItemEntity();
 		ie.setActive(boundary.getActive());
 		ie.setCreatedTimestamp(boundary.getCreatedTimestamp());
-		ie.setEmail(boundary.getCreatedBy().getUserId().getEmail());
-		ie.setId(boundary.getItemId().getId());
+		ie.setUserId(boundary.getCreatedBy().getUserId().getSpace()+"@@"+boundary.getCreatedBy().getUserId().getEmail());
 		ie.setLat(boundary.getLocation().getLat());
 		ie.setLng(boundary.getLocation().getLng());
 		ie.setName(boundary.getName());
-		ie.setItemSpace(boundary.getItemId().getSpace());
-		ie.setUserSpace(boundary.getCreatedBy().getUserId().getSpace());
+		ie.setItemId(boundary.getItemId().getSpace()+"@@"+boundary.getItemId().getId());
 		ie.setType(boundary.getType());
+		ie.setItemAttribute(boundary.getItemAttributes());
 		return ie;
 	}
 
@@ -80,7 +78,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		rv.setCreateTimestamp(entity.getCreatedTimestamp());
 		rv.setInvokedBy(new InvokedBy(new UserId(entity.getInvokedBySpaceEmail().split("@@")[0],entity.getInvokedBySpaceEmail().split("@@")[1])));
 		rv.setItem(new Item(new ItemId(entity.getItemSpaceId().split("@@")[0],entity.getItemSpaceId().split("@@")[1])));
-		rv.setOperationAttributes(new OperationAttributes(entity.getOperationAttributesMap()));
+		rv.setOperationAttributes(entity.getOperationAttributesMap());
 		rv.setOperationId(new OperationId(entity.getOperationSpaceId().split("@@")[0],entity.getOperationSpaceId().split("@@")[1]));
 		rv.setType(entity.getType());
 		return rv;
@@ -92,7 +90,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		rv.setCreatedTimestamp(boundary.getCreateTimestamp());
 		rv.setInvokedBySpaceEmail(boundary.getInvokedBy().getUserId().getSpace() + "@@" + boundary.getInvokedBy().getUserId().getEmail() );
 		rv.setItemSpaceId(boundary.getItem().getItemid().getSpace() + "@@" + boundary.getItem().getItemid().getId());
-		rv.setOperationAttributesMap(boundary.getOperationAttributes().getMap());
+		rv.setOperationAttributesMap(boundary.getOperationAttributes());
 		rv.setOperationSpaceId(boundary.getOperationId().getSpace() + "@@" + boundary.getOperationId().getId());
 		rv.setType(boundary.getType());
 		

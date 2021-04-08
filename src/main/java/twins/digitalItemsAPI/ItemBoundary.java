@@ -1,5 +1,6 @@
 package twins.digitalItemsAPI;
 import java.util.Date;
+import java.util.Map;
 
 /*"itemId":{
 	"space":"2021b.twins",
@@ -34,14 +35,14 @@ public class ItemBoundary {
 	private Date createdTimestamp;
 	private CreatedBy createdBy;
 	private Location location;
-	private ItemAttributes itemAttributes;
+	private Map<String, Object> itemAttributes;
 	
 	public ItemBoundary() {
 	
 	}
 	
 	public ItemBoundary(ItemId itemId, String type, String name, Boolean active, Date createdTimestamp, CreatedBy createdBy,
-			Location location, ItemAttributes itemAttributes) {
+			Location location, Map<String,Object> itemAttributes) {
 		super();
 		this.itemId = itemId;
 		this.type = type;
@@ -95,11 +96,14 @@ public class ItemBoundary {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	public ItemAttributes getItemAttributes() {
+
+	public Map<String, Object> getItemAttributes() {
 		return itemAttributes;
 	}
-	public void setItemAttributes(ItemAttributes itemAttributes) {
+
+	public void setItemAttributes(Map<String, Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
+	
 	
 }

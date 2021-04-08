@@ -38,13 +38,10 @@ public class ItemsServiceMockup implements ItemsService {
 		
 		else if(item.getLocation().getLat() == null || item.getLocation().getLng() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
-	
-		ie.setId(UUID.randomUUID().toString());
-		ie.setItemSpace(appName); //maybe need to add id to space
-		ie.setUserSpace(userSpace);
-		ie.setEmail(userEmail);
+		ie.setItemId(appName+"@@"+UUID.randomUUID().toString());
+		ie.setUserId(userSpace+"@@"+userEmail);
 		ie.setCreatedTimestamp(new Date());
-		this.items.put(ie.getId(), ie);
+		this.items.put(ie.getItemId(), ie);
 		return this.entityConverter.toBoundary(ie);
 	}
 	
