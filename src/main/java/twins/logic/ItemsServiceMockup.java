@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,11 @@ public class ItemsServiceMockup implements ItemsService {
 	public ItemsServiceMockup(Map<String, ItemEntity> items) {
 		super();
 		this.items = items;
+	}
+	
+	@Autowired
+	public void setEntityConverter(EntityConverter entityConverter) {
+		this.entityConverter = entityConverter;
 	}
 
 
@@ -49,7 +55,7 @@ public class ItemsServiceMockup implements ItemsService {
 	@Override
 	public ItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
 			ItemBoundary update) {
-		ItemEntity entity = this.items.get(itemId);
+		ItemEntity entity = this.items.get(itemSpace+"@@"+itemId);
 		
 		if(entity != null) {
 			if (update.getActive()!=null )
@@ -75,7 +81,7 @@ public class ItemsServiceMockup implements ItemsService {
 	
 	@Override
 	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
-		ItemEntity ie = this.items.get(itemId);
+		ItemEntity ie = this.items.get(itemSpace+"@@"+itemId);
 		if(ie != null) {
 			return this.entityConverter.toBoundary(ie);
 		}else {

@@ -46,12 +46,13 @@ public class UsersServiceMockup implements UsersService{
 
 		UserEntity entity = this.entityConverter.fromBoundary(user);
 		entity.setUserId(appName+"@@"+user.getUserId().getEmail());
+		this.users.put(entity.getUserId(), entity);
 		return this.entityConverter.toBoundary(entity);
 	}
 
 	@Override
 	public UserBoundary login(String userSpace, String userEmail) {
-		UserEntity entity = this.users.get(userEmail);
+		UserEntity entity = this.users.get(userSpace+"@@"+userEmail);
 		if (entity != null) {
 			UserBoundary boundary = entityConverter.toBoundary(entity);
 			return boundary;
@@ -63,7 +64,7 @@ public class UsersServiceMockup implements UsersService{
 
 	@Override
 	public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update) {
-		UserEntity entity = this.users.get(userEmail);
+		UserEntity entity = this.users.get(userSpace+"@@"+userEmail);
 		
 		if(entity != null) {
 			if (update.getAvatar()!=null)

@@ -34,7 +34,7 @@ public class EntityConverterImplementation implements EntityConverter{
 	public UserEntity fromBoundary(UserBoundary boundary) {
 		UserEntity ue = new UserEntity();
 		ue.setAvatar(boundary.getAvatar());
-		ue.setUserId(boundary.getUserId().getEmail()+"@@"+boundary.getUserId().getEmail());
+		ue.setUserId(boundary.getUserId().getSpace()+"@@"+boundary.getUserId().getEmail());
 		ue.setRole(boundary.getRole());
 		ue.setUsername(boundary.getUsername());
 		return ue;
