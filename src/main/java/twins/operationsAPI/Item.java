@@ -3,22 +3,22 @@ package twins.operationsAPI;
 import twins.digitalItemsAPI.ItemId;
 
 public class Item {
-	private ItemId itemid;
+	private ItemId itemId;
 
 	public Item() {
 	}
 
-	public Item(ItemId itemid) {
+	public Item(ItemId itemId) {
 		super();
-		this.itemid = itemid;
+		this.itemId = itemId;
 	}
 
-	public ItemId getItemid() {
-		return itemid;
+	public ItemId getItemId() {
+		return itemId;
 	}
 
-	public void setItemid(ItemId itemid) {
-		this.itemid = itemid;
+	public void setItemId(ItemId itemId) {
+		this.itemId = itemId;
 	}
 	
 }

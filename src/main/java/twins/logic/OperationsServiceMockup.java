@@ -1,5 +1,8 @@
 package twins.logic;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +25,12 @@ public class OperationsServiceMockup implements OperationsService{
 	private String space;
 	private Map<String,OperationEntity> operationsMap;
 	private EntityConverter entityConvert;
+	
+	public OperationsServiceMockup() {
+		super();
+		this.operationsMap = Collections.synchronizedMap(new HashMap<>());
+;
+	}
  
 	@Autowired
 	public void setEntityConvert(EntityConverter entityConvert) {
@@ -34,6 +43,7 @@ public class OperationsServiceMockup implements OperationsService{
 	public Object invokeOperations(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
 		operation.setOperationId(new OperationId(space,newId));
+		operation.setCreatedTimestamp(new Date());
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		this.operationsMap.put(entity.getOperationSpaceId(), entity);
 		operation = this.entityConvert.toBoundary(entity);
@@ -44,6 +54,7 @@ public class OperationsServiceMockup implements OperationsService{
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
 		operation.setOperationId(new OperationId(space,newId));
+		operation.setCreatedTimestamp(new Date());
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		this.operationsMap.put(entity.getOperationSpaceId(), entity);
 		operation = this.entityConvert.toBoundary(entity);

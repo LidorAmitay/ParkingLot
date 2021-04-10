@@ -86,14 +86,6 @@ public class OperationBoundary {
 		this.item = item;
 	}
 
-	
-	public Date getCreateTimestamp() {
-		return createdTimestamp;
-	}
-
-	public void setCreateTimestamp(Date createTimestamp) {
-		this.createdTimestamp = createTimestamp;
-	}
 
 	public InvokedBy getInvokedBy() {
 		return invokedBy;
