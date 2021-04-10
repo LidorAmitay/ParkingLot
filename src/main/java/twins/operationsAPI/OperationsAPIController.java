@@ -14,7 +14,7 @@ import twins.logic.OperationsService;
 public class OperationsAPIController {
 	
 	private OperationsService operationsService; 
-	
+	 
 	@Autowired
 	public void setOperationsService(OperationsService operationsService) {
 		this.operationsService = operationsService;
@@ -22,14 +22,14 @@ public class OperationsAPIController {
 	
 	//Input - Operation Boundary with null operationId
 	//Output - Any JSON
-	@RequestMapping(
+	@RequestMapping(  
 			path = "/twins/operations", 
 			method = RequestMethod.POST, 
 			produces = MediaType.APPLICATION_JSON_VALUE,//Output
 			consumes = MediaType.APPLICATION_JSON_VALUE)//Input
 		public Object InvokeOperationOnItem (@RequestBody OperationBoundary operation) {
-			operationsService.invokeAsynchronousOperation(operation);
-			return operation;
+			this.operationsService.invokeOperations(operation); 
+			return operation; 
 		}
 	
 	//Input - Operation Boundary with null operationId
@@ -40,8 +40,7 @@ public class OperationsAPIController {
 			produces = MediaType.APPLICATION_JSON_VALUE,//Output
 			consumes = MediaType.APPLICATION_JSON_VALUE)//Input
 		public Object ASynchronousOperation (@RequestBody OperationBoundary operation) {
-			operation.setOperationId(new OperationId("2021b.operation", "1234"));
-			System.err.println("(STUB) successfully A-Synchronous operation " + operation.getOperationId());
+			this.operationsService.invokeAsynchronousOperation(operation);
 			return operation;
 		}
 }

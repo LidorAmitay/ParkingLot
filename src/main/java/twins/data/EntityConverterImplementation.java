@@ -71,7 +71,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		ie.setItemAttribute(boundary.getItemAttributes());
 		return ie;
 	}
-
+    
 	@Override
 	public OperationBoundary toBoundary(OperationEntity entity) {
 		OperationBoundary rv = new OperationBoundary();
@@ -83,7 +83,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		rv.setType(entity.getType());
 		return rv;
 	}
-
+  
 	@Override
 	public OperationEntity fromBoundary(OperationBoundary boundary) {
 		OperationEntity rv = new OperationEntity();

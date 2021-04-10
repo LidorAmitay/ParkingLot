@@ -8,17 +8,21 @@ import java.util.stream.Collectors;
 import javax.swing.text.html.parser.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import twins.data.EntityConverter;
 import twins.data.OperationEntity;
 import twins.operationsAPI.OperationBoundary;
+import twins.operationsAPI.OperationId;
 @Service
 public class OperationsServiceMockup implements OperationsService{
-	
+	 
+	@Value("${spring.application.name}")
+	private String space;
 	private Map<String,OperationEntity> operationsMap;
 	private EntityConverter entityConvert;
-
+ 
 	@Autowired
 	public void setEntityConvert(EntityConverter entityConvert) {
 		this.entityConvert = entityConvert;
@@ -29,24 +33,27 @@ public class OperationsServiceMockup implements OperationsService{
 	@Override
 	public Object invokeOperations(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
+		operation.setOperationId(new OperationId(space,newId));
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
-		entity.setOperationSpaceId(newId);
-		this.operationsMap.put(newId, entity);
+		this.operationsMap.put(entity.getOperationSpaceId(), entity);
+		operation = this.entityConvert.toBoundary(entity);
 		return operation;
 	}
 
 	@Override
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
+		operation.setOperationId(new OperationId(space,newId));
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
-		entity.setOperationSpaceId(newId);
-		this.operationsMap.put(newId, entity);
-		return this.entityConvert.toBoundary(entity);
+		this.operationsMap.put(entity.getOperationSpaceId(), entity);
+		operation = this.entityConvert.toBoundary(entity);
+		return operation;
+		
 	}
-
+ 
 	@Override
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
-		// TODO Auto-generated method stub
+		
 		return this.operationsMap.values().stream().map(this.entityConvert::toBoundary).collect(Collectors.toList());
 	}
 
