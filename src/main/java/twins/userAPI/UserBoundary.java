@@ -1,6 +1,5 @@
 package twins.userAPI;
 
-import twins.data.UserRole;
 
 //{
 //"clientID":"1",

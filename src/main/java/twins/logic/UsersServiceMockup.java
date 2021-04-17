@@ -14,13 +14,13 @@ import twins.data.EntityConverter;
 import twins.data.UserEntity;
 import twins.data.UserRole;
 import twins.userAPI.UserBoundary;
+import twins.userAPI.UserId;
 
 
 
 @Service
 public class UsersServiceMockup implements UsersService{
 	
-	@Value("${spring.application.name}")
 	private String appName;
 	private Map<String, UserEntity> users;
 	private EntityConverter entityConverter;
@@ -29,6 +29,11 @@ public class UsersServiceMockup implements UsersService{
 	public UsersServiceMockup(EntityConverter entityConverter) {
 		super();
 		this.users = Collections.synchronizedMap(new HashMap<>());
+	}
+	
+	@Value("${spring.application.name:defaultName}")
+	public void setSpringApplicatioName(String appName) {
+		this.appName = appName;
 	}
 	
 	@Autowired
@@ -43,9 +48,11 @@ public class UsersServiceMockup implements UsersService{
 		    } catch (IllegalArgumentException ex) {  
 		    	throw new RuntimeException("could not create user by role: " +user.getRole());
 		  }
-
+		if(user.getUserId().getEmail() == null || user.getUserId().getEmail() == "")
+			throw new RuntimeException("could not create user with no email");
+		
+		user.getUserId().setSpace(appName);	
 		UserEntity entity = this.entityConverter.fromBoundary(user);
-		entity.setUserId(appName+"@@"+user.getUserId().getEmail());
 		this.users.put(entity.getUserId(), entity);
 		return this.entityConverter.toBoundary(entity);
 	}

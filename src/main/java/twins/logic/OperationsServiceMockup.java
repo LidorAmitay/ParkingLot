@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.swing.text.html.parser.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +15,16 @@ import org.springframework.stereotype.Service;
 
 import twins.data.EntityConverter;
 import twins.data.OperationEntity;
+import twins.operationsAPI.InvokedBy;
+import twins.operationsAPI.Item;
+import twins.digitalItemsAPI.ItemId;
+
 import twins.operationsAPI.OperationBoundary;
 import twins.operationsAPI.OperationId;
+import twins.userAPI.UserId;
 @Service
 public class OperationsServiceMockup implements OperationsService{
-	 
-	@Value("${spring.application.name}")
+	
 	private String space;
 	private Map<String,OperationEntity> operationsMap;
 	private EntityConverter entityConvert;
@@ -30,6 +33,10 @@ public class OperationsServiceMockup implements OperationsService{
 		super();
 		this.operationsMap = Collections.synchronizedMap(new HashMap<>());
 ;
+	}
+	@Value("${spring.application.name:defaultName}")
+	public void setSpringApplicatioName(String space) {
+		this.space = space;
 	}
  
 	@Autowired
@@ -40,14 +47,24 @@ public class OperationsServiceMockup implements OperationsService{
 	
 	
 	@Override
-	public Object invokeOperations(OperationBoundary operation) {
+	public Object invokeOperation(OperationBoundary operation) {
 		String newId = UUID.randomUUID().toString();
 		operation.setOperationId(new OperationId(space,newId));
 		operation.setCreatedTimestamp(new Date());
+		
+		if(operation.getItem() == null)
+			operation.setItem(new Item(new ItemId()));
+		else if(operation.getItem().getItemId() == null)
+			operation.getItem().setItemId(new ItemId());
+		
+		if(operation.getInvokedBy() == null)
+			operation.setInvokedBy(new InvokedBy(new UserId()));
+		else if(operation.getInvokedBy().getUserId() == null)
+			operation.getInvokedBy().setUserId(new UserId());
+		
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		this.operationsMap.put(entity.getOperationSpaceId(), entity);
-		operation = this.entityConvert.toBoundary(entity);
-		return operation;
+		return this.entityConvert.toBoundary(entity);
 	}
 
 	@Override
@@ -57,8 +74,7 @@ public class OperationsServiceMockup implements OperationsService{
 		operation.setCreatedTimestamp(new Date());
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		this.operationsMap.put(entity.getOperationSpaceId(), entity);
-		operation = this.entityConvert.toBoundary(entity);
-		return operation;
+		return this.entityConvert.toBoundary(entity);
 		
 	}
  

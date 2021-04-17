@@ -19,12 +19,6 @@ public class ItemEntity {
 	//Constructor
 	public ItemEntity() {
 	}
-	
-	public Map<String, Object> getItemAttribute() {
-		return itemAttributes;
-	}
-
-
 
 	public String getItemId() {
 		return itemId;
@@ -49,12 +43,6 @@ public class ItemEntity {
 	public void setItemAttributes(Map<String, Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
-
-	public void setItemAttribute(Map<String, Object> itemAttribute) {
-		this.itemAttributes = itemAttribute;
-	}
-
-
 
 	
 	public String getType() {

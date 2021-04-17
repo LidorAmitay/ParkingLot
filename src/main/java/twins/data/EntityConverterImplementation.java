@@ -46,13 +46,12 @@ public class EntityConverterImplementation implements EntityConverter{
 		ItemBoundary ib = new ItemBoundary();
 		ib.setActive(entity.getActive());
 		ib.setCreatedBy(new CreatedBy(new UserId(entity.getUserId().split("@@")[0],entity.getUserId().split("@@")[1])) );
-		ib.setCreatedTimestamp(new Date());
-		//ib.setItemAttributes(entity.getActive());
+		ib.setCreatedTimestamp(entity.getCreatedTimestamp());
 		ib.setItemId(new ItemId(entity.getItemId().split("@@")[0],entity.getItemId().split("@@")[1]));
 		ib.setLocation(new Location(entity.getLat(), entity.getLng()));
 		ib.setName(entity.getName());
 		ib.setType(entity.getType());
-		ib.setItemAttributes(entity.getItemAttribute());
+		ib.setItemAttributes(entity.getItemAttributes());
 		
 		return ib;
 	}
@@ -68,7 +67,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		ie.setName(boundary.getName());
 		ie.setItemId(boundary.getItemId().getSpace()+"@@"+boundary.getItemId().getId());
 		ie.setType(boundary.getType());
-		ie.setItemAttribute(boundary.getItemAttributes());
+		ie.setItemAttributes(boundary.getItemAttributes());
 		return ie;
 	}
     

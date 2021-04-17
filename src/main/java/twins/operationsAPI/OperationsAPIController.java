@@ -28,7 +28,7 @@ public class OperationsAPIController {
 			produces = MediaType.APPLICATION_JSON_VALUE,//Output
 			consumes = MediaType.APPLICATION_JSON_VALUE)//Input
 		public Object InvokeOperationOnItem (@RequestBody OperationBoundary operation) {
-			this.operationsService.invokeOperations(operation); 
+			this.operationsService.invokeOperation(operation); 
 			return operation; 
 		}
 	

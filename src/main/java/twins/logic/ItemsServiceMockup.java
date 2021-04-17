@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 
 import twins.data.EntityConverter;
 import twins.data.ItemEntity;
+import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;
+import twins.digitalItemsAPI.ItemId;
+import twins.userAPI.UserId;
 
 @Service
 public class ItemsServiceMockup implements ItemsService {
 	
-	@Value("${spring.application.name}")
 	private String appName;
 	private Map<String, ItemEntity> items;
 	private EntityConverter entityConverter;
@@ -30,6 +32,11 @@ public class ItemsServiceMockup implements ItemsService {
 		this.items = items;
 	}
 	
+	@Value("${spring.application.name:defaultName}")
+	public void setSpringApplicatioName(String appName) {
+		this.appName = appName;
+	}
+	
 	@Autowired
 	public void setEntityConverter(EntityConverter entityConverter) {
 		this.entityConverter = entityConverter;
@@ -37,16 +44,16 @@ public class ItemsServiceMockup implements ItemsService {
 
 
 	@Override
-	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) {
-		ItemEntity ie = this.entityConverter.fromBoundary(item); 
+	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) { 
 		if(item.getLocation() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
 		
 		else if(item.getLocation().getLat() == null || item.getLocation().getLng() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
-		ie.setItemId(appName+"@@"+UUID.randomUUID().toString());
-		ie.setUserId(userSpace+"@@"+userEmail);
-		ie.setCreatedTimestamp(new Date());
+		item.setItemId(new ItemId(appName,UUID.randomUUID().toString()));
+		item.setCreatedBy(new CreatedBy(new UserId(userSpace,userEmail)));
+		item.setCreatedTimestamp(new Date());
+		ItemEntity ie = this.entityConverter.fromBoundary(item);
 		this.items.put(ie.getItemId(), ie);
 		return this.entityConverter.toBoundary(ie);
 	}
@@ -70,7 +77,8 @@ public class ItemsServiceMockup implements ItemsService {
 				entity.setName(update.getName());
 			if (update.getType()!=null)
 				entity.setType(update.getType());
-	
+			if (update.getItemAttributes()!= null)
+				entity.setItemAttributes(update.getItemAttributes());
 			return this.entityConverter.toBoundary(entity);
 		} else {
 			// TODO have server return status 404 here
