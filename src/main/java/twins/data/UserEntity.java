@@ -1,6 +1,11 @@
 package twins.data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="USERS")
 public class UserEntity {
 
 	private String userId;
@@ -13,7 +18,7 @@ public class UserEntity {
 	}
 
 
-
+	@Id
 	public String getUserId() {
 		return userId;
 	}
