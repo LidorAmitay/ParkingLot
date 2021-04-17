@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import twins.data.EntityConverter;
 import twins.data.ItemEntity;
 import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;

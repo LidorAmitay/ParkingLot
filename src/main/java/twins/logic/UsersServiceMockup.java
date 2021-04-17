@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import twins.data.EntityConverter;
 import twins.data.UserEntity;
 import twins.data.UserRole;
 import twins.userAPI.UserBoundary;

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import twins.data.EntityConverter;
 import twins.data.OperationEntity;
 import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
