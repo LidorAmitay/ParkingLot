@@ -21,7 +21,7 @@ import twins.digitalItemsAPI.ItemId;
 import twins.operationsAPI.OperationBoundary;
 import twins.operationsAPI.OperationId;
 import twins.userAPI.UserId;
-@Service
+//@Service
 public class OperationsServiceMockup implements OperationsService{
 	
 	private String space;

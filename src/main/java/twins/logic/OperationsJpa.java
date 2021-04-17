@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import twins.data.OperationsDao;
@@ -18,7 +19,7 @@ import twins.operationsAPI.Item;
 import twins.operationsAPI.OperationBoundary;
 import twins.operationsAPI.OperationId;
 import twins.userAPI.UserId;
-
+@Service
 public class OperationsJpa implements OperationsService {
 	private OperationsDao operationDao;
 	private String space;
