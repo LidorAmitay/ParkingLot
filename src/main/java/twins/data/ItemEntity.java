@@ -3,7 +3,15 @@ package twins.data;
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import org.springframework.stereotype.Service;
+
+@Entity
+@Service
 public class ItemEntity {
 	
 	private String itemId;
@@ -19,7 +27,8 @@ public class ItemEntity {
 	//Constructor
 	public ItemEntity() {
 	}
-
+	
+	@Id
 	public String getItemId() {
 		return itemId;
 	}
@@ -70,6 +79,7 @@ public class ItemEntity {
 		this.active = active;
 	}
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
