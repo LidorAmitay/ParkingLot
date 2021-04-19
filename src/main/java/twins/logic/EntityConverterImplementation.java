@@ -1,9 +1,10 @@
 package twins.logic;
 
-import java.util.Date;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import twins.data.ItemEntity;
 import twins.data.OperationEntity;
@@ -21,6 +22,12 @@ import twins.userAPI.UserId;
 
 @Component //*** component or service?
 public class EntityConverterImplementation implements EntityConverter{
+	private ObjectMapper jackson;
+	
+	//Constructor
+	public EntityConverterImplementation() {
+		this.jackson = new ObjectMapper();
+	}
 
 	@Override
 	public UserBoundary toBoundary(UserEntity entity) {
@@ -54,7 +61,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		ib.setLocation(new Location(entity.getLat(), entity.getLng()));
 		ib.setName(entity.getName());
 		ib.setType(entity.getType());
-		ib.setItemAttributes(entity.getItemAttributes());
+		ib.setItemAttributes(this.fromJsonToMap(entity.getItemAttributes()));
 		
 		return ib;
 	}
@@ -70,7 +77,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		ie.setName(boundary.getName());
 		ie.setItemId(boundary.getItemId().getSpace()+"@@"+boundary.getItemId().getId());
 		ie.setType(boundary.getType());
-		ie.setItemAttributes(boundary.getItemAttributes());
+		ie.setItemAttributes(this.fromMapToJson(boundary.getItemAttributes()));
 		return ie;
 	}
     
@@ -98,6 +105,29 @@ public class EntityConverterImplementation implements EntityConverter{
 		
 		
 		return rv;
+	}
+
+	@Override
+	public String fromMapToJson (Map<String, Object> value) { // marshalling: Java->JSON
+		
+		try {
+			return this.jackson
+				.writeValueAsString(value);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	
+	}
+	
+	@Override
+	public Map<String, Object> fromJsonToMap (String json){ // unmarshalling: JSON->Java
+		try {
+			return this.jackson
+				.readValue(json, Map.class);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	

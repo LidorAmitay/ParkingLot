@@ -3,7 +3,6 @@ package twins.logic;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -58,6 +57,12 @@ public class ItemsServiceJpa implements ItemsService {
 		
 		else if(item.getLocation().getLat() == null || item.getLocation().getLng() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
+		
+		if (item.getName()==null)
+			throw new RuntimeException("could not create an item with null item name ");// NullPointerException
+		if (item.getType()==null)
+			throw new RuntimeException("could not create an item with null item type ");// NullPointerException
+		
 		item.setItemId(new ItemId(appName,UUID.randomUUID().toString()));
 		item.setCreatedBy(new CreatedBy(new UserId(userSpace,userEmail)));
 		item.setCreatedTimestamp(new Date());
@@ -88,7 +93,7 @@ public class ItemsServiceJpa implements ItemsService {
 			if (update.getType()!=null)
 				entity.setType(update.getType());
 			if (update.getItemAttributes()!= null)
-				entity.setItemAttributes(update.getItemAttributes());
+				entity.setItemAttributes(this.entityConverter.fromMapToJson(update.getItemAttributes())); //Marshaling map to json
 			entity = this.digitalItemDao.save(entity);
 			return this.entityConverter.toBoundary(entity);
 		} else {

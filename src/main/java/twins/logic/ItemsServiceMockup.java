@@ -76,8 +76,8 @@ public class ItemsServiceMockup implements ItemsService {
 				entity.setName(update.getName());
 			if (update.getType()!=null)
 				entity.setType(update.getType());
-			if (update.getItemAttributes()!= null)
-				entity.setItemAttributes(update.getItemAttributes());
+			//if (update.getItemAttributes()!= null)                   mockup unused canceled due to new update
+			//	entity.setItemAttributes(update.getItemAttributes());
 			return this.entityConverter.toBoundary(entity);
 		} else {
 			// TODO have server return status 404 here
