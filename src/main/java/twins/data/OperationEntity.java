@@ -1,16 +1,12 @@
 package twins.data;
 
 import java.util.Date;
-import java.util.Map;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import twins.operationsAPI.InvokedBy;
-import twins.operationsAPI.Item;
-import twins.operationsAPI.OperationId;
 @Entity
 @Table(name = "Operations")
 public class OperationEntity {
@@ -19,7 +15,7 @@ public class OperationEntity {
 	private String ItemSpaceId;
 	private Date createdTimestamp;
 	private String invokedBySpaceEmail;
-	private Map<String, Object> operationAttributesMap;
+	private String operationAttributes;
 	
 	public OperationEntity() {
 	}
@@ -48,7 +44,7 @@ public class OperationEntity {
 	public void setItemSpaceId(String itemSpaceId) {
 		ItemSpaceId = itemSpaceId;
 	}
-	@Transient
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
@@ -64,13 +60,15 @@ public class OperationEntity {
 	public void setInvokedBySpaceEmail(String invokedBySpaceEmail) {
 		this.invokedBySpaceEmail = invokedBySpaceEmail;
 	}
-	@Transient
-	public Map<String, Object> getOperationAttributesMap() {
-		return operationAttributesMap;
+	
+	
+	public String getOperationAttributes() {
+		return operationAttributes;
 	}
-
-	public void setOperationAttributesMap(Map<String, Object> operationAttributesMap) {
-		this.operationAttributesMap = operationAttributesMap;
+	
+	
+	public void setOperationAttributes(String operationAttributesMap) {
+		this.operationAttributes = operationAttributesMap;
 	}
 
 

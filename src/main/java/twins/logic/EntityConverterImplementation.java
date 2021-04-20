@@ -87,7 +87,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		rv.setCreatedTimestamp(entity.getCreatedTimestamp());
 		rv.setInvokedBy(new InvokedBy(new UserId(entity.getInvokedBySpaceEmail().split("@@")[0],entity.getInvokedBySpaceEmail().split("@@")[1])));
 		rv.setItem(new Item(new ItemId(entity.getItemSpaceId().split("@@")[0],entity.getItemSpaceId().split("@@")[1])));
-		rv.setOperationAttributes(entity.getOperationAttributesMap());
+		rv.setOperationAttributes(fromJsonToMap(entity.getOperationAttributes()));
 		rv.setOperationId(new OperationId(entity.getOperationSpaceId().split("@@")[0],entity.getOperationSpaceId().split("@@")[1]));
 		rv.setType(entity.getType());
 		return rv;
@@ -99,7 +99,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		rv.setCreatedTimestamp(boundary.getCreatedTimestamp());
 		rv.setInvokedBySpaceEmail(boundary.getInvokedBy().getUserId().getSpace() + "@@" + boundary.getInvokedBy().getUserId().getEmail() );
 		rv.setItemSpaceId(boundary.getItem().getItemId().getSpace() + "@@" + boundary.getItem().getItemId().getId());
-		rv.setOperationAttributesMap(boundary.getOperationAttributes());
+		rv.setOperationAttributes(fromMapToJson(boundary.getOperationAttributes()));
 		rv.setOperationSpaceId(boundary.getOperationId().getSpace() + "@@" + boundary.getOperationId().getId());
 		rv.setType(boundary.getType());
 		
