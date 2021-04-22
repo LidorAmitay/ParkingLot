@@ -22,7 +22,7 @@ import twins.digitalItemsAPI.ItemId;
 import twins.userAPI.UserId;
 
 @Service
-public class ItemsServiceJpa implements ItemsService {
+public class ItemsServiceJpa implements UpdatedItemsService {
 	
 	private String appName;
 	private DigitalItemDao digitalItemDao;
@@ -135,6 +135,54 @@ public class ItemsServiceJpa implements ItemsService {
 	public void deleteAllItems(String adminSpace, String adminEmail) {
 		this.digitalItemDao
 		.deleteAll();
+	}
+
+	@Override
+	@Transactional
+	public void bindItemToItem(String parentId, String childId) {
+		
+		ItemEntity parentItem = this.digitalItemDao
+				.findById(parentId)
+				.orElseThrow(()->new ItemNotFoundException("could not find parent item by id: " + parentId));
+
+		ItemEntity childItem = this.digitalItemDao
+				.findById(childId)
+				.orElseThrow(()->new ItemNotFoundException("could not find child item by id: " + childId));
+
+		parentItem.addItem(parentItem);
+		
+		this.digitalItemDao.save(parentItem);
+		this.digitalItemDao.save(childItem);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ItemBoundary> getAllChildren(String parentId) {
+		ItemEntity parentItem = this.digitalItemDao
+				.findById(parentId)
+				.orElseThrow(()->new ItemNotFoundException("could not find parent item by id: " + parentId));
+		
+		return parentItem
+				.getItemChildren() // Set<ItemEntity>
+				.stream() // Stream<ItemEntity>
+				.map(this.entityConverter::toBoundary)// Stream<ItemEntity>
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<ItemBoundary> getAllParents(String childId) {
+		ItemEntity childItem = this.digitalItemDao
+				.findById(childId)
+				.orElseThrow(()->new ItemNotFoundException("could not find parent item by id: " + childId));
+		
+		if (childItem.getItemParent() != null) {
+			return Optional.of(
+				this.entityConverter
+					.toBoundary(childItem.getItemParent()));
+		}else {
+			return Optional.empty();
+		}
 	}
 	
 }

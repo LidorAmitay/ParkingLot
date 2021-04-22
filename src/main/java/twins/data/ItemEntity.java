@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
 @Entity
 @Table(name = "Items")
 public class ItemEntity {
@@ -29,12 +30,12 @@ public class ItemEntity {
 	private String itemAttributes;
 	
 										// relate item entity to other item entities
-	private Set<ItemEntity> childrenItem; // valid items children
-	private ItemEntity parentItem; 		// valid original item or null
+	private Set<ItemEntity> itemChildren; // valid items children
+	private ItemEntity itemParent; 		// valid original item or null
 
 	// Constructor
 	public ItemEntity() {
-		this.childrenItem = new HashSet<>();
+		this.itemChildren = new HashSet<>();
 	}
 
 	@Id
@@ -111,23 +112,28 @@ public class ItemEntity {
 	public void setLng(double lng) {
 		this.lng = lng;
 	}
-
-	@OneToMany(mappedBy = "parentItem", fetch = FetchType.EAGER)
-	public Set<ItemEntity> getChildrenItem() {
-		return childrenItem;
+	
+	public void addItem(ItemEntity child) {
+		this.getItemChildren().add(child);
+		child.setItemParent(this);
 	}
 
-	public void setChildrenItem(Set<ItemEntity> childrenItem) {
-		this.childrenItem = childrenItem;
+	@OneToMany(mappedBy = "itemParent", fetch = FetchType.LAZY)
+	public Set<ItemEntity> getItemChildren() {
+		return itemChildren;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	public ItemEntity getParentItem() {
-		return parentItem;
+	public void setItemChildren(Set<ItemEntity> itemChildren) {
+		this.itemChildren = itemChildren;
 	}
 
-	public void setParentItem(ItemEntity parentItem) {
-		this.parentItem = parentItem;
+	@ManyToOne(fetch = FetchType.LAZY)
+	public ItemEntity getItemParent() {
+		return itemParent;
+	}
+
+	public void setItemParent(ItemEntity itemParent) {
+		this.itemParent = itemParent;
 	}
 	
 	@Override

@@ -48,14 +48,18 @@ public class OperationsJpa implements OperationsService {
 		operation.setCreatedTimestamp(new Date());
 
 		if (operation.getItem() == null)
-			operation.setItem(new Item(new ItemId()));
+			throw new RuntimeException("Can't invoke operation with null item");
 		else if (operation.getItem().getItemId() == null)
-			operation.getItem().setItemId(new ItemId());
+			throw new RuntimeException("Can't invoke operation with null item id");
+		else if (operation.getItem().getItemId().getSpace()==null || operation.getItem().getItemId().getId()==null)
+			throw new RuntimeException("Can't invoke operation with null item id or space");
 
 		if (operation.getInvokedBy() == null)
-			operation.setInvokedBy(new InvokedBy(new UserId()));
+			throw new RuntimeException("Can't invoke operation with null user");
 		else if (operation.getInvokedBy().getUserId() == null)
-			operation.getInvokedBy().setUserId(new UserId());
+			throw new RuntimeException("Can't invoke operation with null user id");
+		else if (operation.getInvokedBy().getUserId().getEmail() == null || operation.getInvokedBy().getUserId().getSpace() == null)
+			throw new RuntimeException("Can't invoke operation with null user space or email");
 
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		entity = this.operationDao.save(entity);
@@ -71,15 +75,18 @@ public class OperationsJpa implements OperationsService {
 		operation.setCreatedTimestamp(new Date());
 
 		if (operation.getItem() == null)
-			operation.setItem(new Item(new ItemId()));
+			throw new RuntimeException("Can't invoke operation with null item");
 		else if (operation.getItem().getItemId() == null)
-			operation.getItem().setItemId(new ItemId());
-
+			throw new RuntimeException("Can't invoke operation with null item id");
+		else if (operation.getItem().getItemId().getSpace()==null || operation.getItem().getItemId().getId()==null)
+			throw new RuntimeException("Can't invoke operation with null item id or space");
 		if (operation.getInvokedBy() == null)
-			operation.setInvokedBy(new InvokedBy(new UserId()));
+			throw new RuntimeException("Can't invoke operation with null user");
 		else if (operation.getInvokedBy().getUserId() == null)
-			operation.getInvokedBy().setUserId(new UserId());
-
+			throw new RuntimeException("Can't invoke operation with null user id");
+		else if (operation.getInvokedBy().getUserId().getEmail() == null || operation.getInvokedBy().getUserId().getSpace() == null)
+			throw new RuntimeException("Can't invoke operation with null user space or email");
+		
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		entity = this.operationDao.save(entity);
 		return this.entityConvert.toBoundary(entity);

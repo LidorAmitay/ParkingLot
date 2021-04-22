@@ -3,6 +3,7 @@ package twins.data;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -61,7 +62,8 @@ public class OperationEntity {
 		this.invokedBySpaceEmail = invokedBySpaceEmail;
 	}
 	
-	
+	// Map to database as long string (clob)
+	@Lob
 	public String getOperationAttributes() {
 		return operationAttributes;
 	}
