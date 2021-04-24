@@ -52,12 +52,15 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Override
 	@Transactional
 	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) { 
+		
 		if(item.getLocation() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
 		
 		else if(item.getLocation().getLat() == null || item.getLocation().getLng() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
 		
+		if (item.getActive()==null)
+			throw new RuntimeException("could not create an item with null active field ");// NullPointerException
 		if (item.getName()==null)
 			throw new RuntimeException("could not create an item with null item name ");// NullPointerException
 		if (item.getType()==null)
