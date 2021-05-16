@@ -2,6 +2,7 @@ package twins.logic;
 
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,9 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import twins.data.DigitalItemDao;
 import twins.data.ItemEntity;
+import twins.data.UserDao;
+import twins.data.UserEntity;
 import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;
 import twins.digitalItemsAPI.ItemId;
+import twins.digitalItemsAPI.Location;
 import twins.userAPI.UserId;
 
 @Service
@@ -27,6 +31,8 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	private String appName;
 	private DigitalItemDao digitalItemDao;
 	private EntityConverter entityConverter;
+	private UserDao userdao;
+
 	
 	
 	//Constructor
@@ -47,11 +53,21 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	public void setEntityConverter(EntityConverter entityConverter) {
 		this.entityConverter = entityConverter;
 	}
+	
+	@Autowired
+	public void setUserdao(UserDao userdao) {
+		this.userdao = userdao;
+	}
 
 
 	@Override
 	@Transactional
 	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) { 
+		
+		Optional<UserEntity> optionalUser = this.userdao.findById(userSpace + "@@" + userEmail);
+		if(optionalUser.isPresent())
+			if(optionalUser.get().getRole().equalsIgnoreCase("manager")==false) 
+				throw new RuntimeException("Only a manager can create item ");// NullPointerException
 		
 		if(item.getLocation() == null)
 			throw new RuntimeException("could not create an item with null location ");// NullPointerException
@@ -71,10 +87,44 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 		item.setCreatedTimestamp(new Date());
 		ItemEntity ie = this.entityConverter.fromBoundary(item);
 		ie = this.digitalItemDao.save(ie);
+		
+			if(item.getType().equals("parkinglot")) {
+					
+				if(item.getItemAttributes().containsKey("priceOfParking")== false ) 
+					throw new RuntimeException("could not create an parkinglot with null priceOfParking ");
+				
+				if(item.getItemAttributes().containsKey("numOfParking")== false ) 
+					throw new RuntimeException("could not create an parkinglot with null numOfParking ");
+				else 
+					createParkingLot( userSpace,  userEmail,(int)item.getItemAttributes().get("numOfParking"),item );
+					
+			}
+		
+		
+		
 		return this.entityConverter.toBoundary(ie);
 	}
 	
 	
+	private void createParkingLot(String userSpace, String userEmail, int numOfParking,ItemBoundary parkinglot) {
+		
+			
+		for (int i = 0; i < numOfParking; i++) {
+			
+			ItemBoundary parkingspot = new ItemBoundary();
+			parkingspot.setActive(true); 
+			parkingspot.setCreatedBy(new CreatedBy(new UserId(userSpace, userEmail)));
+			parkingspot.setType("parkingspot");
+			parkingspot.setName("Parking number : " +i );
+			parkingspot.setLocation(new Location(parkinglot.getLocation().getLat(), parkinglot.getLocation().getLng()));
+			createItem(userSpace, userEmail, parkingspot);
+			bindItemToItem(parkinglot.getItemId().getSpace()+"@@"+parkinglot.getItemId().getId(),userSpace+"@@"+userEmail);
+			
+		}
+		
+		
+	}
+
 	@Override
 	@Transactional
 	public ItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
@@ -152,7 +202,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 				.findById(childId)
 				.orElseThrow(()->new ItemNotFoundException("could not find child item by id: " + childId));
 
-		parentItem.addItem(parentItem);
+		parentItem.addItem(childItem);
 		
 		this.digitalItemDao.save(parentItem);
 		this.digitalItemDao.save(childItem);

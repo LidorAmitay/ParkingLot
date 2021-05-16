@@ -9,7 +9,7 @@ import twins.userAPI.UserId;
 public class CreatedBy {
 	
 	private UserId userId;
-
+ 
 	public CreatedBy() {
 	}
 	public CreatedBy(UserId userId) {

@@ -35,7 +35,7 @@ public class OperationBoundary {
 	private OperationId operationId;
 	private String type;
 	private Item item;
-	private Date createdTimestamp;
+	private Date createdTimestamp; 
 	private InvokedBy invokedBy;
 	private Map<String,Object> operationAttributes;
 	

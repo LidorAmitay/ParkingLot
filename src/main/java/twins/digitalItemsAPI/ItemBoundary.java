@@ -36,7 +36,7 @@ public class ItemBoundary {
 	private CreatedBy createdBy;
 	private Location location;
 	private Map<String, Object> itemAttributes;
-	
+	 
 	public ItemBoundary() {
 	
 	}

@@ -18,8 +18,8 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "Items")
 public class ItemEntity {
-
-	private String itemId;
+ 
+	private String itemId; 
 	private String userId;
 	private String type;
 	private String name;
