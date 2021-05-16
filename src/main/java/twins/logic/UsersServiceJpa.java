@@ -90,8 +90,7 @@ public class UsersServiceJpa implements UsersService {
 			UserBoundary boundary = entityConverter.toBoundary(entity);
 			return boundary;
 		} else {
-			// TODO have server return status 404 here
-			throw new RuntimeException("could not find user by space and email: " + userSpace + " , " + userEmail);// NullPointerException
+			throw new UserNotFoundException("Could not find user by space and email: " + userSpace + " , " + userEmail);// NullPointerException
 		}
 	}
 
