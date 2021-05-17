@@ -2,7 +2,7 @@ package twins.logic;
 
 
 import java.util.Date;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,20 +85,22 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 		item.setItemId(new ItemId(appName,UUID.randomUUID().toString()));
 		item.setCreatedBy(new CreatedBy(new UserId(userSpace,userEmail)));
 		item.setCreatedTimestamp(new Date());
+		// TODO add total profit attribute 
+		//item.getItemAttributes().put("Profit", 0);
 		ItemEntity ie = this.entityConverter.fromBoundary(item);
 		ie = this.digitalItemDao.save(ie);
 		
-			if(item.getType().equals("parkinglot")) {
-					
-				if(item.getItemAttributes().containsKey("priceOfParking")== false ) 
-					throw new RuntimeException("could not create an parkinglot with null priceOfParking ");
+		if(item.getType().equals("parkingLot")) {
 				
-				if(item.getItemAttributes().containsKey("numOfParking")== false ) 
-					throw new RuntimeException("could not create an parkinglot with null numOfParking ");
-				else 
-					createParkingLot( userSpace,  userEmail,(int)item.getItemAttributes().get("numOfParking"),item );
-					
-			}
+			if(item.getItemAttributes().containsKey("priceOfParking")== false ) 
+				throw new RuntimeException("could not create an parkinglot with null priceOfParking ");
+			
+			if(item.getItemAttributes().containsKey("numOfParking")== false ) 
+				throw new RuntimeException("could not create an parkinglot with null numOfParking ");
+			
+			createParkingLot( userSpace,  userEmail,(int)item.getItemAttributes().get("numOfParking"),item );
+				
+		}
 		
 		
 		
@@ -117,8 +119,9 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			parkingspot.setType("parkingspot");
 			parkingspot.setName("Parking number : " +i );
 			parkingspot.setLocation(new Location(parkinglot.getLocation().getLat(), parkinglot.getLocation().getLng()));
-			createItem(userSpace, userEmail, parkingspot);
-			bindItemToItem(parkinglot.getItemId().getSpace()+"@@"+parkinglot.getItemId().getId(),userSpace+"@@"+userEmail);
+			parkingspot = createItem(userSpace, userEmail, parkingspot);
+			bindItemToItem(parkinglot.getItemId().getSpace()+"@@"+parkinglot.getItemId().getId(),
+					parkingspot.getItemId().getSpace() + "@@" + parkingspot.getItemId().getId());
 			
 		}
 		
@@ -150,8 +153,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			entity = this.digitalItemDao.save(entity);
 			return this.entityConverter.toBoundary(entity);
 		} else {
-			// TODO have server return status 404 here
-			throw new RuntimeException("could not find item " + itemId);// NullPointerException
+			throw new ItemNotFoundException("could not find item " + itemId);// NullPointerException
 		}	
 	}
 	
@@ -164,8 +166,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			ItemEntity ie = optionalEntity.get();
 			return this.entityConverter.toBoundary(ie);
 		}else {
-			// TODO have server return status 404 here
-			throw new RuntimeException("could not find item " + itemId);// NullPointerException
+			throw new ItemNotFoundException("could not find item " + itemId);// NullPointerException
 		}
 	}
 	

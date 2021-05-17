@@ -30,7 +30,7 @@ public class ItemsRelatedApi {
 	@RequestMapping(method = RequestMethod.PUT,
 			path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}/children",
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void addResponseToMessage (
+	public void addRelation (
 			@PathVariable("itemSpace") String itemSpace, 
 			@PathVariable("itemId") String itemId, 
 			@RequestBody ItemId itemIdBoundary) {
@@ -41,7 +41,7 @@ public class ItemsRelatedApi {
 	@RequestMapping(path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}/children",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ItemBoundary[] getResponses (
+	public ItemBoundary[] getChildren (
 			@PathVariable("itemSpace") String itemSpace, 
 			@PathVariable("itemId") String itemId ){
 		return this.itemsService
@@ -52,7 +52,7 @@ public class ItemsRelatedApi {
 	@RequestMapping(path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}/parents",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ItemBoundary[] getOriginals (
+	public ItemBoundary[] getParents (
 			@PathVariable("itemSpace") String itemSpace, 
 			@PathVariable("itemId") String itemId ){
 		Optional<ItemBoundary> getParent = this.itemsService.getAllParents(
