@@ -198,7 +198,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	}
 	
 	
-	@Override
+	@Override //Old
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail) {
 		// TODO add permission check manager or player
@@ -210,12 +210,13 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			.map(this.entityConverter::toBoundary)
 			.collect(Collectors.toList());
 	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int page, int size) {
 		// TODO add permission check manager or player
 		Iterable<ItemEntity>  allEntities = this.digitalItemDao
-				.findAll(PageRequest.of(page, size, Direction.DESC, "name"));
+				.findAllByActive(true, PageRequest.of(page, size, Direction.DESC, "name"));
 			
 		return StreamSupport
 			.stream(allEntities.spliterator(), false) // get stream from iterable

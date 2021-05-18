@@ -1,5 +1,6 @@
 package twins.logic;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +98,9 @@ public class OperationsJpa implements OperationsServiceExtends {
 				|| operation.getInvokedBy().getUserId().getSpace() == null)
 			throw new RuntimeException("Can't invoke operation with null user space or email");
 		
-
+		OperationEntity entity = this.entityConvert.fromBoundary(operation);
+		entity = this.operationDao.save(entity);
+		
 		switch (operation.getType()) {
 
 			case "enterParking":
@@ -109,7 +112,8 @@ public class OperationsJpa implements OperationsServiceExtends {
 				
 				double price;
 				price = exitparking(operation);
-				break;
+				return price;
+				//break;
 				
 			case "searchParking":
 				
@@ -122,13 +126,12 @@ public class OperationsJpa implements OperationsServiceExtends {
 
 		}
 		
-		OperationEntity entity = this.entityConvert.fromBoundary(operation);
-		entity = this.operationDao.save(entity);
+		
 		return this.entityConvert.toBoundary(entity);
 
 	}
 	@Override
-	@Transactional
+	@Transactional//Old 
 	public Object invokeOperation(OperationBoundary operation) {
 
 		Optional<UserEntity> optionalUser = this.userDao.findById(operation.getInvokedBy().getUserId().getSpace() + "@@"
@@ -232,7 +235,7 @@ public class OperationsJpa implements OperationsServiceExtends {
 		long lat = (long) operation.getOperationAttributes().get("cityLocationLat");
 		long lng = (long) operation.getOperationAttributes().get("cityLocationLng");
 		
-		return this.digitalItemDao.findAllByLocation(lat, lng, PageRequest.of(page, size, Direction.DESC, "name"))
+		return this.digitalItemDao.findAllByLatAndLng(lat, lng, PageRequest.of(page, size, Direction.DESC, "name"))
 		.stream()
 		.map(this.entityConvert::toBoundary)
 		.collect(Collectors.toList());
@@ -244,13 +247,20 @@ public class OperationsJpa implements OperationsServiceExtends {
 		String parkingLotId = (String) operation.getOperationAttributes().get("parkingLotId");
 		//boolean checkActivation = (boolean) operation.getOperationAttributes().get("active");
 		boolean active = true;
-		
-		return this.digitalItemDao.findAllByParent(parkingLotId, active, PageRequest.of(page, size, Direction.DESC, "name"))
-		.stream()
-		.map(this.entityConvert::toBoundary)
-		.collect(Collectors.toList());
+		ItemEntity parent;
+		Optional<ItemEntity> optionalParent = this.digitalItemDao.findById(parkingLotId);
+		if (optionalParent.isPresent()) {
+			parent = optionalParent.get();
+			return this.digitalItemDao.findAllByItemParentAndActive(parent, active, PageRequest.of(page, size, Direction.DESC, "name"))
+			.stream()
+			.map(this.entityConvert::toBoundary)
+			.collect(Collectors.toList());
+		}
+		else
+			return Collections.<ItemBoundary>emptyList();
 
 	}
+
 
 
 
