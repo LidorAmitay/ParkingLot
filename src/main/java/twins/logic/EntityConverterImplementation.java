@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import twins.data.ItemEntity;
 import twins.data.OperationEntity;
 import twins.data.UserEntity;
+import twins.data.UserRole;
 import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;
 import twins.digitalItemsAPI.ItemId;
@@ -33,7 +34,7 @@ public class EntityConverterImplementation implements EntityConverter{
 	public UserBoundary toBoundary(UserEntity entity) {
 		UserBoundary ub = new UserBoundary();
 		ub.setAvatar(entity.getAvatar());
-		ub.setRole(entity.getRole());
+		ub.setRole(entity.getRole().toString());
 		ub.setUserId(new UserId(entity.getUserId().split("@@")[0],entity.getUserId().split("@@")[1]));
 		ub.setUsername(entity.getUsername());
 		
@@ -45,7 +46,7 @@ public class EntityConverterImplementation implements EntityConverter{
 		UserEntity ue = new UserEntity();
 		ue.setAvatar(boundary.getAvatar());
 		ue.setUserId(boundary.getUserId().getSpace()+"@@"+boundary.getUserId().getEmail());
-		ue.setRole(boundary.getRole());
+		ue.setRole(UserRole.valueOf(boundary.getRole().toUpperCase()));
 		ue.setUsername(boundary.getUsername());
 		return ue;
 	}

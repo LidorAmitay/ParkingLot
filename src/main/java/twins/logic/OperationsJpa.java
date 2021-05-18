@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import twins.data.OperationsDao;
 import twins.data.UserDao;
 import twins.data.UserEntity;
+import twins.data.UserRole;
 import twins.data.DigitalItemDao;
 import twins.data.ItemEntity;
 import twins.data.OperationEntity;
@@ -33,7 +34,7 @@ public class OperationsJpa implements OperationsService {
 	private OperationsDao operationDao;
 	private String space;
 	private EntityConverter entityConvert;
-	private UserDao userdao;
+	private UserDao userDao;
 	private DigitalItemDao digitalItemDao;
 
 	@Value("${spring.application.name:defaultName}")
@@ -53,7 +54,7 @@ public class OperationsJpa implements OperationsService {
 
 	@Autowired
 	public void setUserdao(UserDao userdao) {
-		this.userdao = userdao;
+		this.userDao = userdao;
 	}
 
 	@Autowired
@@ -65,11 +66,16 @@ public class OperationsJpa implements OperationsService {
 	@Transactional
 	public Object invokeOperation(OperationBoundary operation) {
 
-		Optional<UserEntity> optionalUser = this.userdao.findById(operation.getInvokedBy().getUserId().getSpace() + "@@"
+		Optional<UserEntity> optionalUser = this.userDao.findById(operation.getInvokedBy().getUserId().getSpace() + "@@"
 				+ operation.getInvokedBy().getUserId().getEmail());
-		if (optionalUser.isPresent())
-			if (optionalUser.get().getRole().equalsIgnoreCase("player") == false)
-				throw new RuntimeException("Only a player can do operation");
+		if (optionalUser.isPresent()) {
+			if (optionalUser.get().getRole().equals(UserRole.PLAYER) == false)
+				throw new RuntimeException("Only a player can make operations");
+		}
+		else
+			throw new RuntimeException("Can't find user with space : " + operation.getInvokedBy().getUserId().getSpace() +
+					"and id : "+ operation.getInvokedBy().getUserId().getEmail());
+		
 		String newId = UUID.randomUUID().toString();
 		operation.setOperationId(new OperationId(space, newId));
 		operation.setCreatedTimestamp(new Date());
@@ -175,6 +181,17 @@ public class OperationsJpa implements OperationsService {
 	@Override
 	@Transactional
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
+		// Permission check
+		Optional<UserEntity> optionalUser = this.userDao.findById(operation.getInvokedBy().getUserId().getSpace() + "@@"
+				+ operation.getInvokedBy().getUserId().getEmail());
+		if (optionalUser.isPresent()) {
+			if (optionalUser.get().getRole().equals(UserRole.PLAYER) == false)
+				throw new RuntimeException("Only a player can make operations");
+		}
+		else
+			throw new RuntimeException("Can't find user with space : " + operation.getInvokedBy().getUserId().getSpace() +
+					"and id : "+ operation.getInvokedBy().getUserId().getEmail());
+
 		String newId = UUID.randomUUID().toString();
 		operation.setOperationId(new OperationId(space, newId));
 		operation.setCreatedTimestamp(new Date());
@@ -201,16 +218,43 @@ public class OperationsJpa implements OperationsService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
-		Iterable<OperationEntity> allEntities = this.operationDao.findAll();
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN)) {
+				Iterable<OperationEntity> allEntities = this.operationDao.findAll();
 
-		return StreamSupport.stream(allEntities.spliterator(), false) // get stream from iterable
-				.map(this.entityConvert::toBoundary).collect(Collectors.toList());
+				return StreamSupport.stream(allEntities.spliterator(), false) // get stream from iterable
+						.map(this.entityConvert::toBoundary).collect(Collectors.toList());
+			}
+				
+			else
+				throw new RuntimeException("Only user with ADMIN role can get all operations");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);
+		
+		
+		
 	}
 
 	@Override
 	@Transactional
 	public void deleteAllOperations(String adminSpace, String adminEmail) {
-		this.operationDao.deleteAll();
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN))
+				this.operationDao.deleteAll();
+			else
+				throw new RuntimeException("Only user with ADMIN role can delete all operations");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);
+		
+		
+		
+		
 
 	}
 

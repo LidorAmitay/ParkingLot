@@ -9,7 +9,7 @@ import javax.persistence.Table;
 public class UserEntity {
 
 	private String userId;
-	private String role;
+	private UserRole role;
 	private String username;
 	private String avatar;
 	
@@ -31,13 +31,23 @@ public class UserEntity {
 
 
 
-	public String getRole() {
+//	public String getRole() {
+//		return role;
+//	}
+//
+//	public void setRole(String role) {
+//		this.role = role;
+//	}
+
+	public UserRole getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+
+	public void setRole(UserRole role) {
 		this.role = role;
 	}
+
 
 	public String getUsername() {
 		return username;

@@ -76,9 +76,9 @@ public class UsersServiceMockup implements UsersService{
 			if (update.getAvatar()!=null)
 				entity.setAvatar(update.getAvatar());
 			try {
-			       UserRole temp = UserRole.valueOf(entity.getRole());
+			       UserRole temp = UserRole.valueOf(entity.getRole().toString());
 			       if (update.getRole()!=null)
-			    	   entity.setRole(update.getRole());
+			    	   entity.setRole(UserRole.valueOf(update.getRole().toUpperCase()));
 			       
 			    } catch (IllegalArgumentException ex) {}
 			if (update.getUsername()!=null)

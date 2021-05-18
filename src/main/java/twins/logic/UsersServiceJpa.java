@@ -107,9 +107,9 @@ public class UsersServiceJpa implements UsersService {
 			if (update.getAvatar() != null)
 				entity.setAvatar(update.getAvatar());
 			try {
-				UserRole temp = UserRole.valueOf(entity.getRole());
+				UserRole temp = UserRole.valueOf(entity.getRole().toString());
 				if (update.getRole() != null)
-					entity.setRole(update.getRole());
+					entity.setRole(UserRole.valueOf(update.getRole().toUpperCase()));
 
 			} catch (IllegalArgumentException ex) {
 			}
@@ -129,18 +129,39 @@ public class UsersServiceJpa implements UsersService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) {
-		Iterable<UserEntity>  allEntities = this.userDao
-				.findAll();
-			
-			return StreamSupport
-				.stream(allEntities.spliterator(), false) // get stream from iterable
-				.map(this.entityConverter::toBoundary)
-				.collect(Collectors.toList());
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN)) { // Permission check
+				Iterable<UserEntity>  allEntities = this.userDao
+						.findAll();
+					
+				return StreamSupport
+					.stream(allEntities.spliterator(), false) // get stream from iterable
+					.map(this.entityConverter::toBoundary)
+					.collect(Collectors.toList());
+			}	
+			else
+				throw new RuntimeException("Only user with ADMIN role can get all users");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);
+		
 	}
 
 	@Override
 	@Transactional
 	public void deleteAllUsers(String adminSpace, String adminEmail) {
-		this.userDao.deleteAll();
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN))
+				this.userDao.deleteAll();
+			else
+				throw new RuntimeException("Only user with ADMIN role can delete all users");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);
+		
 	}
 }

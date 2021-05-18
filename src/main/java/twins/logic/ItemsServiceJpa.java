@@ -19,6 +19,7 @@ import twins.data.DigitalItemDao;
 import twins.data.ItemEntity;
 import twins.data.UserDao;
 import twins.data.UserEntity;
+import twins.data.UserRole;
 import twins.digitalItemsAPI.CreatedBy;
 import twins.digitalItemsAPI.ItemBoundary;
 import twins.digitalItemsAPI.ItemId;
@@ -31,7 +32,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	private String appName;
 	private DigitalItemDao digitalItemDao;
 	private EntityConverter entityConverter;
-	private UserDao userdao;
+	private UserDao userDao;
 
 	
 	
@@ -56,7 +57,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	
 	@Autowired
 	public void setUserdao(UserDao userdao) {
-		this.userdao = userdao;
+		this.userDao = userdao;
 	}
 
 
@@ -64,9 +65,9 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Transactional
 	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) { 
 		
-		Optional<UserEntity> optionalUser = this.userdao.findById(userSpace + "@@" + userEmail);
+		Optional<UserEntity> optionalUser = this.userDao.findById(userSpace + "@@" + userEmail);
 		if(optionalUser.isPresent())
-			if(optionalUser.get().getRole().equalsIgnoreCase("manager")==false) 
+			if(!(optionalUser.get().getRole().equals(UserRole.MANAGER))) 
 				throw new RuntimeException("Only a manager can create item ");// NullPointerException
 		
 		if(item.getLocation() == null)
@@ -132,6 +133,12 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Transactional
 	public ItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
 			ItemBoundary update) {
+		// Permission check
+		Optional<UserEntity> optionalUser = this.userDao.findById(userSpace + "@@" + userEmail);
+		if(optionalUser.isPresent())
+			if(!(optionalUser.get().getRole().equals(UserRole.MANAGER))) 
+				throw new RuntimeException("Only a manager can update item ");// NullPointerException
+		
 		Optional<ItemEntity> optionalEntity = this.digitalItemDao.findById(itemSpace+"@@"+itemId);
 		
 		if(optionalEntity.isPresent()) {
@@ -161,19 +168,38 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Override
 	@Transactional(readOnly = true)
 	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
+		
+		Optional<UserEntity> optionalUser = this.userDao.findById(userSpace + "@@" + userEmail);
+		UserEntity user;
+		if(optionalUser.isPresent()) {
+			user = optionalUser.get();
+			if(user.getRole().equals(UserRole.ADMIN))
+				throw new RuntimeException("Admin permission cannot get items");
+		}else
+			throw new RuntimeException("Can't find user with space : " + userSpace + "and id : "+ userEmail);
+		
 		Optional<ItemEntity> optionalEntity = this.digitalItemDao.findById(itemSpace+"@@"+itemId);
 		if(optionalEntity.isPresent()) {
 			ItemEntity ie = optionalEntity.get();
-			return this.entityConverter.toBoundary(ie);
+			if(ie.getActive())
+				return this.entityConverter.toBoundary(ie);
+			
+			else if(user.getRole().equals(UserRole.MANAGER))
+				return this.entityConverter.toBoundary(ie);
+			else
+				throw new ItemNotFoundException("could not find item " + itemId);
+			
 		}else {
 			throw new ItemNotFoundException("could not find item " + itemId);// NullPointerException
 		}
+		
 	}
 	
 	
 	@Override
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail) {
+		// TODO add permission check manager or player
 		Iterable<ItemEntity>  allEntities = this.digitalItemDao
 				.findAll();
 			
@@ -187,8 +213,17 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Override
 	@Transactional
 	public void deleteAllItems(String adminSpace, String adminEmail) {
-		this.digitalItemDao
-		.deleteAll();
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN))
+				this.digitalItemDao.deleteAll();
+			else
+				throw new RuntimeException("Only user with ADMIN role can delete all items");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);		
+		
 	}
 
 	@Override
