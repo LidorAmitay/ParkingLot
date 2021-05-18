@@ -1,9 +1,6 @@
 package twins.logic;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +11,8 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +21,9 @@ import twins.data.UserDao;
 import twins.data.UserEntity;
 import twins.data.UserRole;
 import twins.userAPI.UserBoundary;
-import twins.userAPI.UserId;
 
 @Service
-public class UsersServiceJpa implements UsersService {
+public class UsersServiceJpa implements UsersServiceExtends {
 
 	private String appName;
 	private UserDao userDao;
@@ -128,13 +126,13 @@ public class UsersServiceJpa implements UsersService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) {
+	public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail, int page, int size) {
 		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
 		if(optionalUser.isPresent()) {
 			UserEntity admin = optionalUser.get();
 			if(admin.getRole().equals(UserRole.ADMIN)) { // Permission check
 				Iterable<UserEntity>  allEntities = this.userDao
-						.findAll();
+						.findAll(PageRequest.of(page, size, Direction.DESC, "userId"));
 					
 				return StreamSupport
 					.stream(allEntities.spliterator(), false) // get stream from iterable
@@ -159,6 +157,29 @@ public class UsersServiceJpa implements UsersService {
 				this.userDao.deleteAll();
 			else
 				throw new RuntimeException("Only user with ADMIN role can delete all users");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);
+		
+	}
+	//not used, old version of method
+	@Override
+	@Transactional(readOnly = true)
+	public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) {
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN)) { // Permission check
+				Iterable<UserEntity>  allEntities = this.userDao
+						.findAll();
+					
+				return StreamSupport
+					.stream(allEntities.spliterator(), false) // get stream from iterable
+					.map(this.entityConverter::toBoundary)
+					.collect(Collectors.toList());
+			}	
+			else
+				throw new RuntimeException("Only user with ADMIN role can get all users");
 		}else
 			throw new RuntimeException("Can't find user with space : " + adminSpace + 
 					" and id : " + adminEmail);

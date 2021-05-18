@@ -12,6 +12,8 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import twins.data.UserRole;
 import twins.data.DigitalItemDao;
 import twins.data.ItemEntity;
 import twins.data.OperationEntity;
+import twins.digitalItemsAPI.ItemBoundary;
 import twins.digitalItemsAPI.ItemId;
 import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
@@ -30,7 +33,7 @@ import twins.operationsAPI.OperationId;
 import twins.userAPI.UserId;
 
 @Service
-public class OperationsJpa implements OperationsService {
+public class OperationsJpa implements OperationsServiceExtends {
 	private OperationsDao operationDao;
 	private String space;
 	private EntityConverter entityConvert;
@@ -64,7 +67,7 @@ public class OperationsJpa implements OperationsService {
 
 	@Override
 	@Transactional
-	public Object invokeOperation(OperationBoundary operation) {
+	public Object invokeOperation(OperationBoundary operation,int page , int size) {
 
 		Optional<UserEntity> optionalUser = this.userDao.findById(operation.getInvokedBy().getUserId().getSpace() + "@@"
 				+ operation.getInvokedBy().getUserId().getEmail());
@@ -107,8 +110,54 @@ public class OperationsJpa implements OperationsService {
 				double price;
 				price = exitparking(operation);
 				break;
+				
+			case "searchParking":
+				
+				return searchParkingSpot(operation,page,size);
+
+			
+			case "searchParkingLot":
+				
+				return searchParkingLot(operation,page,size);
 
 		}
+		
+		OperationEntity entity = this.entityConvert.fromBoundary(operation);
+		entity = this.operationDao.save(entity);
+		return this.entityConvert.toBoundary(entity);
+
+	}
+	@Override
+	@Transactional
+	public Object invokeOperation(OperationBoundary operation) {
+
+		Optional<UserEntity> optionalUser = this.userDao.findById(operation.getInvokedBy().getUserId().getSpace() + "@@"
+				+ operation.getInvokedBy().getUserId().getEmail());
+		if (optionalUser.isPresent()) {
+			if (optionalUser.get().getRole().equals(UserRole.PLAYER) == false)
+				throw new RuntimeException("Only a player can make operations");
+		}
+		else
+			throw new RuntimeException("Can't find user with space : " + operation.getInvokedBy().getUserId().getSpace() +
+					"and id : "+ operation.getInvokedBy().getUserId().getEmail());
+		
+		String newId = UUID.randomUUID().toString();
+		operation.setOperationId(new OperationId(space, newId));
+		operation.setCreatedTimestamp(new Date());
+		if (operation.getItem() == null)
+			throw new RuntimeException("Can't invoke operation with null item");
+		else if (operation.getItem().getItemId() == null)
+			throw new RuntimeException("Can't invoke operation with null item id");
+		else if (operation.getItem().getItemId().getSpace() == null || operation.getItem().getItemId().getId() == null)
+			throw new RuntimeException("Can't invoke operation with null item id or space");
+
+		if (operation.getInvokedBy() == null)
+			throw new RuntimeException("Can't invoke operation with null user");
+		else if (operation.getInvokedBy().getUserId() == null)
+			throw new RuntimeException("Can't invoke operation with null user id");
+		else if (operation.getInvokedBy().getUserId().getEmail() == null
+				|| operation.getInvokedBy().getUserId().getSpace() == null)
+			throw new RuntimeException("Can't invoke operation with null user space or email");
 		
 		OperationEntity entity = this.entityConvert.fromBoundary(operation);
 		entity = this.operationDao.save(entity);
@@ -177,6 +226,33 @@ public class OperationsJpa implements OperationsService {
 					+ operation.getItem().getItemId().getSpace() + "@@" + operation.getItem().getItemId().getId());
 
 	}
+	
+	private List<ItemBoundary> searchParkingLot(OperationBoundary operation, int page, int size) {
+
+		long lat = (long) operation.getOperationAttributes().get("cityLocationLat");
+		long lng = (long) operation.getOperationAttributes().get("cityLocationLng");
+		
+		return this.digitalItemDao.findAllByLocation(lat, lng, PageRequest.of(page, size, Direction.DESC, "name"))
+		.stream()
+		.map(this.entityConvert::toBoundary)
+		.collect(Collectors.toList());
+
+	}
+	
+	private List<ItemBoundary> searchParkingSpot(OperationBoundary operation, int page, int size) {
+
+		String parkingLotId = (String) operation.getOperationAttributes().get("parkingLotId");
+		//boolean checkActivation = (boolean) operation.getOperationAttributes().get("active");
+		boolean active = true;
+		
+		return this.digitalItemDao.findAllByParent(parkingLotId, active, PageRequest.of(page, size, Direction.DESC, "name"))
+		.stream()
+		.map(this.entityConvert::toBoundary)
+		.collect(Collectors.toList());
+
+	}
+
+
 
 	@Override
 	@Transactional
@@ -215,6 +291,29 @@ public class OperationsJpa implements OperationsService {
 		return this.entityConvert.toBoundary(entity);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail, int page, int size) {
+		Optional<UserEntity> optionalUser = this.userDao.findById(adminSpace + "@@" + adminEmail);
+		if(optionalUser.isPresent()) {
+			UserEntity admin = optionalUser.get();
+			if(admin.getRole().equals(UserRole.ADMIN)) {
+				Iterable<OperationEntity> allEntities = this.operationDao.findAll(PageRequest.of(page, size, Direction.DESC, "type", "OperationSpaceId"));
+
+				return StreamSupport.stream(allEntities.spliterator(), false) // get stream from iterable
+						.map(this.entityConvert::toBoundary).collect(Collectors.toList());
+			}
+				
+			else
+				throw new RuntimeException("Only user with ADMIN role can get all operations");
+		}else
+			throw new RuntimeException("Can't find user with space : " + adminSpace + 
+					" and id : " + adminEmail);
+		
+		
+		
+	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {

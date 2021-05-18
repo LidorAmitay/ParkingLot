@@ -11,6 +11,8 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -202,6 +204,18 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 		// TODO add permission check manager or player
 		Iterable<ItemEntity>  allEntities = this.digitalItemDao
 				.findAll();
+			
+		return StreamSupport
+			.stream(allEntities.spliterator(), false) // get stream from iterable
+			.map(this.entityConverter::toBoundary)
+			.collect(Collectors.toList());
+	}
+	@Override
+	@Transactional(readOnly = true)
+	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int page, int size) {
+		// TODO add permission check manager or player
+		Iterable<ItemEntity>  allEntities = this.digitalItemDao
+				.findAll(PageRequest.of(page, size, Direction.DESC, "name"));
 			
 		return StreamSupport
 			.stream(allEntities.spliterator(), false) // get stream from iterable

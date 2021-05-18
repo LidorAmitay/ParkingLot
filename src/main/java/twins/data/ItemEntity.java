@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -126,8 +127,10 @@ public class ItemEntity {
 	public void setItemChildren(Set<ItemEntity> itemChildren) {
 		this.itemChildren = itemChildren;
 	}
-
+	
+	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parentId", nullable = false)
 	public ItemEntity getItemParent() {
 		return itemParent;
 	}

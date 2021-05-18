@@ -8,12 +8,16 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import twins.digitalItemsAPI.ItemId;
 import twins.logic.ItemsService;
 import twins.logic.OperationsService;
+import twins.logic.OperationsServiceExtends;
+import twins.logic.UpdatedItemsService;
 import twins.logic.UsersService;
+import twins.logic.UsersServiceExtends;
 import twins.logic.UsersServiceMockup;
 import twins.operationsAPI.InvokedBy;
 import twins.operationsAPI.Item;
@@ -25,12 +29,12 @@ import twins.userAPI.UserId;
 
 @RestController
 public class AdminAPIController {
-	private UsersService userService;
-	private ItemsService itemService;
-	private OperationsService operationsService;
+	private UsersServiceExtends userService;
+	private UpdatedItemsService itemService;
+	private OperationsServiceExtends operationsService;
 	
 	@Autowired
-	public AdminAPIController(UsersService userService, ItemsService itemService, OperationsService operationsService) {
+	public AdminAPIController(UsersServiceExtends userService, UpdatedItemsService itemService, OperationsServiceExtends operationsService) {
 		super();
 		this.userService = userService;
 		this.itemService = itemService;
@@ -59,14 +63,18 @@ public class AdminAPIController {
 				path = "/twins/admin/users/{userSpace}/{userEmail}", 
 				method = RequestMethod.GET,
 				produces = MediaType.APPLICATION_JSON_VALUE)
-			public UserBoundary[] exportAllUsers (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email) {
-				return userService.getAllUsers(space, email).toArray(new UserBoundary[0]);
+			public UserBoundary[] exportAllUsers (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email, @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+					@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+				return userService.getAllUsers(space, email, page, size).toArray(new UserBoundary[0]);
 			}
+
 		@RequestMapping(
 				path = "/twins/admin/operations/{userSpace}/{userEmail}", 
 				method = RequestMethod.GET,
 				produces = MediaType.APPLICATION_JSON_VALUE)
-			public OperationBoundary[] exportAllOperations (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email) {
-				return operationsService.getAllOperations(space, email).toArray(new OperationBoundary[0]);
+			public OperationBoundary[] exportAllOperations (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email, @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+					@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+				return operationsService.getAllOperations(space, email, page, size).toArray(new OperationBoundary[0]);
 			}
+
 }

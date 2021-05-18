@@ -7,16 +7,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import twins.logic.ItemsService;
+import twins.logic.UpdatedItemsService;
 
 
 @RestController
 public class DigitalAPIController {
-	private ItemsService itemService;
+	private UpdatedItemsService itemService;
 	
 	@Autowired	
-	public void setItemService(ItemsService itemService) {
+	public void setItemService(UpdatedItemsService itemService) {
 		this.itemService = itemService;
 	}
 	
@@ -52,7 +54,10 @@ public class DigitalAPIController {
 			path = "/twins/items/{userSpace}/{userEmail}", 
 			method = RequestMethod.GET, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
-		public ItemBoundary[] getAllItems (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email) {
-			return this.itemService.getAllItems(space, email).toArray(new ItemBoundary[0]);
+		public ItemBoundary[] getAllItems (@PathVariable("userSpace") String space,@PathVariable("userEmail") String email,
+				@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+				@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+			return this.itemService.getAllItems(space, email, page, size).toArray(new ItemBoundary[0]);
 		}
+
 }
