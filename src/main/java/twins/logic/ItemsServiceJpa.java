@@ -176,7 +176,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 		if(optionalUser.isPresent()) {
 			user = optionalUser.get();
 			if(user.getRole().equals(UserRole.ADMIN))
-				throw new RuntimeException("Admin permission cannot get items");
+				throw new RuntimeException("Admin does not have permission to get items");
 		}else
 			throw new RuntimeException("Can't find user with space : " + userSpace + "and id : "+ userEmail);
 		
@@ -215,9 +215,26 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int page, int size) {
 		// TODO add permission check manager or player
-		Iterable<ItemEntity>  allEntities = this.digitalItemDao
-				.findAllByActive(true, PageRequest.of(page, size, Direction.DESC, "name"));
-			
+		Optional<UserEntity> optionalUser = this.userDao.findById(userSpace + "@@" + userEmail);
+		UserEntity user;
+		if(optionalUser.isPresent()) {
+			user = optionalUser.get();
+			if(user.getRole().equals(UserRole.ADMIN))
+				throw new RuntimeException("Admin does not have permission to get items");
+		}else
+			throw new RuntimeException("Can't find user with space : " + userSpace + "and id : "+ userEmail);
+		
+		
+		Iterable<ItemEntity>  allEntities;
+		if(user.getRole().equals(UserRole.MANAGER)){
+			allEntities = this.digitalItemDao
+					.findAll();
+		}
+		else{ // user role == PLAYER
+			allEntities = this.digitalItemDao
+			.findAllByActive(true, PageRequest.of(page, size, Direction.DESC, "name"));
+		}
+		
 		return StreamSupport
 			.stream(allEntities.spliterator(), false) // get stream from iterable
 			.map(this.entityConverter::toBoundary)

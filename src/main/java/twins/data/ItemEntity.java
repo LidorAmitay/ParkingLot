@@ -130,7 +130,7 @@ public class ItemEntity {
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "parentId", nullable = false)
+	@JoinColumn(name = "parentId", nullable = true)
 	public ItemEntity getItemParent() {
 		return itemParent;
 	}
