@@ -182,7 +182,7 @@ public class OperationsJpa implements OperationsServiceExtends {
 			pricePerHour = (int)entityConvert.fromJsonToMap(parkingSpot.getItemParent()
 					.getItemAttributes()).get("priceOfParking");
 			
-			 price = calculatePrice((Date)itemAttributes.get("EntryTime"), operation.getCreatedTimestamp(),
+			 price = calculatePrice((long)itemAttributes.get("EntryTime"), operation.getCreatedTimestamp(),
 					 pricePerHour);
 			 
 			itemAttributes.clear();
@@ -192,11 +192,11 @@ public class OperationsJpa implements OperationsServiceExtends {
 		return price;
 	}
 
-	private double calculatePrice(Date EntryParking, Date ExitParking, int priceParking) {
+	private double calculatePrice(long EntryParking, Date ExitParking, int priceParking) {
 
 		double price = 1;
 
-		long dif = ExitParking.getTime() - EntryParking.getTime(); 
+		long dif = ExitParking.getTime() - EntryParking; 
 		TimeUnit time = TimeUnit.MINUTES;
 		double diffInMinutes = time.convert(dif, TimeUnit.MILLISECONDS);
 
@@ -213,10 +213,18 @@ public class OperationsJpa implements OperationsServiceExtends {
 			ItemEntity parkingSpot = new ItemEntity();
 			parkingSpot = optionalParkingspot.get();
 			Map<String, Object> ItemAttributes;
-			if(parkingSpot.getItemAttributes() == null)
-				 ItemAttributes = new HashMap<>();
-			else
+			if(parkingSpot.getItemAttributes() == null) {
+				System.err.println("Create new item attribute");
+				ItemAttributes = new HashMap<>();
+			}
+			else {
+				System.err.println("item att from the entity - " + parkingSpot.getItemAttributes());
 				ItemAttributes = entityConvert.fromJsonToMap(parkingSpot.getItemAttributes());
+				System.err.println("Map convert from {} - " +entityConvert.fromJsonToMap("{}")
+					+ "class - " + entityConvert.fromJsonToMap("{}").getClass());
+				System.err.println("Import item attribute from - " + parkingSpot.getItemAttributes() + "to - " + ItemAttributes);
+			}
+
 			ItemAttributes.put("EntryTime", operation.getCreatedTimestamp());
 			ItemAttributes.put("idOperationCreate", operation.getOperationId());
 			ItemAttributes.put("ParkedUser", operation.getInvokedBy().getUserId().getSpace() + "@@"

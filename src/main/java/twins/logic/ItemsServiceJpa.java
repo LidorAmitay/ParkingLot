@@ -2,7 +2,7 @@ package twins.logic;
 
 
 import java.util.Date;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -88,9 +88,13 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 		item.setItemId(new ItemId(appName,UUID.randomUUID().toString()));
 		item.setCreatedBy(new CreatedBy(new UserId(userSpace,userEmail)));
 		item.setCreatedTimestamp(new Date());
+		
+		if (item.getItemAttributes() == null)
+			item.setItemAttributes(new HashMap<>());
 		// TODO add total profit attribute 
 		//item.getItemAttributes().put("Profit", 0);
 		ItemEntity ie = this.entityConverter.fromBoundary(item);
+		
 		ie = this.digitalItemDao.save(ie);
 		
 		if(item.getType().equals("parkingLot")) {
@@ -101,7 +105,8 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			if(item.getItemAttributes().containsKey("numOfParking")== false ) 
 				throw new RuntimeException("could not create an parkinglot with null numOfParking ");
 			
-			createParkingLot( userSpace,  userEmail,(int)item.getItemAttributes().get("numOfParking"),item );
+			//createParkingLot( userSpace,  userEmail,(int)item.getItemAttributes().get("numOfParking"),item );
+			createParkingLot( userSpace,  userEmail, item);
 				
 		}
 		
@@ -111,9 +116,9 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	}
 	
 	
-	private void createParkingLot(String userSpace, String userEmail, int numOfParking,ItemBoundary parkinglot) {
+	private void createParkingLot(String userSpace, String userEmail,ItemBoundary parkinglot) {
 		
-			
+		int numOfParking = (int)parkinglot.getItemAttributes().get("numOfParking");
 		for (int i = 0; i < numOfParking; i++) {
 			
 			ItemBoundary parkingspot = new ItemBoundary();
@@ -214,7 +219,6 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int page, int size) {
-		// TODO add permission check manager or player
 		Optional<UserEntity> optionalUser = this.userDao.findById(userSpace + "@@" + userEmail);
 		UserEntity user;
 		if(optionalUser.isPresent()) {
