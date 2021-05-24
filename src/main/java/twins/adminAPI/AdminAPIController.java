@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import twins.data.OperationsDao;
 import twins.digitalItemsAPI.ItemId;
 import twins.logic.ItemsService;
 import twins.logic.OperationsService;
@@ -34,10 +35,19 @@ public class AdminAPIController {
 	private OperationsServiceExtends operationsService;
 	
 	@Autowired
-	public AdminAPIController(UsersServiceExtends userService, UpdatedItemsService itemService, OperationsServiceExtends operationsService) {
-		super();
+	public AdminAPIController() {
+	}
+	
+	@Autowired	
+	public void setUsersServiceExtends(UsersServiceExtends userService) {
 		this.userService = userService;
+	}
+	@Autowired	
+	public void setUpdatedItemsService(UpdatedItemsService itemService) {
 		this.itemService = itemService;
+	}
+	@Autowired	
+	public void setOperationsServiceExtends(OperationsServiceExtends operationsService) {
 		this.operationsService = operationsService;
 	}
 	

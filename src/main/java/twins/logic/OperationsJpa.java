@@ -123,6 +123,10 @@ public class OperationsJpa implements OperationsServiceExtends {
 			case "searchParkingLot":
 				
 				return searchParkingLot(operation,page,size);
+				
+			case "getAllParkingLots":
+				
+				return getAllParkingLots(operation,page,size);
 
 		}
 		
@@ -130,6 +134,13 @@ public class OperationsJpa implements OperationsServiceExtends {
 		return this.entityConvert.toBoundary(entity);
 
 	}
+	private Object getAllParkingLots(OperationBoundary operation, int page, int size) {
+		return this.digitalItemDao.findAllByTypeAndActive("parkingLot",true, PageRequest.of(page, size, Direction.DESC, "name"))
+				.stream()
+				.map(this.entityConvert::toBoundary)
+				.collect(Collectors.toList());
+	}
+
 	@Override
 	@Transactional//Old 
 	public Object invokeOperation(OperationBoundary operation) {

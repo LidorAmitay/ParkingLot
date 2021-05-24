@@ -18,7 +18,7 @@ public class DigitalAPIController {
 	private UpdatedItemsService itemService;
 	
 	@Autowired	
-	public void setItemService(UpdatedItemsService itemService) {
+	public void setUpdatedItemService(UpdatedItemsService itemService) {
 		this.itemService = itemService;
 	}
 	
