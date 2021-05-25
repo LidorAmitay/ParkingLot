@@ -29,6 +29,7 @@ public interface DigitalItemDao extends PagingAndSortingRepository<ItemEntity, S
 			@Param("type") String type,
 			@Param("active") boolean active,			
 			Pageable pageable);
+	
 
 
 }

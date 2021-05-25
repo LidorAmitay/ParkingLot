@@ -4,6 +4,7 @@ package twins.logic;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -127,6 +128,12 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			parkingspot.setType("parkingspot");
 			parkingspot.setName("Parking number : " +i );
 			parkingspot.setLocation(new Location(parkinglot.getLocation().getLat(), parkinglot.getLocation().getLng()));
+			Map<String, Object> itemAttributes = new HashMap<>();
+			itemAttributes.put("isAvailable", true);
+			itemAttributes.put("EntryTime",null);
+			itemAttributes.put("idOperationCreate", null);
+			itemAttributes.put("ParkedUser", null);
+			parkingspot.setItemAttributes(itemAttributes);
 			parkingspot = createItem(userSpace, userEmail, parkingspot);
 			bindItemToItem(parkinglot.getItemId().getSpace()+"@@"+parkinglot.getItemId().getId(),
 					parkingspot.getItemId().getSpace() + "@@" + parkingspot.getItemId().getId());
