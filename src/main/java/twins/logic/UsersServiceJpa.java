@@ -3,6 +3,7 @@ package twins.logic;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -92,11 +93,14 @@ public class UsersServiceJpa implements UsersServiceExtends {
 		ItemBoundary userItem = new ItemBoundary();  // saving user as item and user to save the parking.
 		userItem.setLocation(new Location(0.0,0.0));
 		userItem.setName("");
+		userItem.setActive(true);
 		userItem.setType("User");
 		userItem.setItemId(new ItemId(appName,UUID.randomUUID().toString()));
 		userItem.setCreatedBy(new CreatedBy(new UserId(user.getUserId().getSpace(),user.getUserId().getEmail())));
 		userItem.setCreatedTimestamp(new Date());
-		userItem.setItemAttributes(new HashMap<>());
+		Map<String, Object> itemAtt = new HashMap<>();
+		itemAtt.put("parkingId", null);
+		userItem.setItemAttributes(itemAtt);
 		ItemEntity ie = this.entityConverter.fromBoundary(userItem);
 		ie = this.itemDao.save(ie);
 		

@@ -183,57 +183,44 @@ public class OperationsJpa implements OperationsServiceExtends {
 	}
 
 	private double exitparking(OperationBoundary operation) {
-		ItemEntity userItem = this.digitalItemDao
-				.findAllByTypeAndUserId("User",operation.getInvokedBy().getUserId().getSpace() + "@@" + operation.getInvokedBy().getUserId().getEmail(),PageRequest.of(0, 1, Direction.DESC, "name"));
-		if(userItem == null)
+		double price = 0;
+		Optional<ItemEntity> optionalUser = this.digitalItemDao
+				.findByTypeAndUserId("User",operation.getInvokedBy().getUserId().getSpace() + "@@" + operation.getInvokedBy().getUserId().getEmail());
+		if(!optionalUser.isPresent())
 			throw new ItemNotFoundException("Cannot find userItem : " + operation.getInvokedBy().getUserId().getEmail());
 		
+		ItemEntity userItem = optionalUser.get();
 		String parkingSpotId = (String)entityConvert.fromJsonToMap(userItem.getItemAttributes()).get("parkingId");
 		Optional<ItemEntity> optionalParkingSpot = this.digitalItemDao
 				.findById(parkingSpotId);
-		double price = 0;
+		
 		if (optionalParkingSpot.isPresent()) {
 			ItemEntity theParkingSpot = optionalParkingSpot.get();
 			Map<String, Object> parkingSpotItemAttributes = entityConvert.fromJsonToMap(theParkingSpot.getItemAttributes());
 			
-//			for(ItemEntity parkingSpot : parkingLot.getItemChildren()) {
-//				// Converting the item attributes from string to map
-//				parkingSpotItemAttributes = entityConvert.fromJsonToMap(parkingSpot.getItemAttributes());
-//				if(!(boolean)parkingSpotItemAttributes.get("isAvailable")) { // Parking spot is not empty
-//					if(parkingSpotItemAttributes.get("ParkedUser").equals(userId)) { // Parking spot found
-//						theParkingSpot = parkingSpot;
-//						break;
-//					}	
-//				}
-//			}
+			
+			// The price per hour is in the item attributes of the parent item, parkingLot item.
+			int pricePerHour;
+			pricePerHour = (int)entityConvert.fromJsonToMap(theParkingSpot.getItemParent()
+					.getItemAttributes()).get("priceOfParking");
+			
+			 price = calculatePrice((long)parkingSpotItemAttributes.get("EntryTime"), operation.getCreatedTimestamp(),
+					 pricePerHour);
+			// Making the parking spot available, and clear the previous details.
+			parkingSpotItemAttributes.put("isAvailable", true);
+			parkingSpotItemAttributes.put("EntryTime",null);
+			parkingSpotItemAttributes.put("idOperationCreate", null);
+			parkingSpotItemAttributes.put("ParkedUser", null);
+			theParkingSpot.setItemAttributes(entityConvert.fromMapToJson(parkingSpotItemAttributes));
+			digitalItemDao.save(theParkingSpot);
 			
 			
-			
-			
-//				Map<String, Object> itemAttributes = new HashMap<>();
-//				itemAttributes = entityConvert.fromJsonToMap(theParkingSpot.getItemAttributes());
-				
-				// The price per hour is in the item attributes of the parent item, parkingLot item.
-				int pricePerHour;
-				pricePerHour = (int)entityConvert.fromJsonToMap(theParkingSpot.getItemParent()
-						.getItemAttributes()).get("priceOfParking");
-				
-				 price = calculatePrice((long)parkingSpotItemAttributes.get("EntryTime"), operation.getCreatedTimestamp(),
-						 pricePerHour);
-				// Making the parking spot available, and clear the previous details.
-				parkingSpotItemAttributes.put("isAvailable", true);
-				parkingSpotItemAttributes.put("EntryTime",null);
-				parkingSpotItemAttributes.put("idOperationCreate", null);
-				parkingSpotItemAttributes.put("ParkedUser", null);
-				theParkingSpot.setItemAttributes(entityConvert.fromMapToJson(parkingSpotItemAttributes));
-				digitalItemDao.save(theParkingSpot);
-				
-				ItemBoundary userB = entityConvert.toBoundary(userItem);
-				//userB.getItemAttributes().
-				//TODO release the parking id from the user item
-				
-			
-			
+			ItemBoundary userB = entityConvert.toBoundary(userItem);
+			Map<String, Object> itemAttributes = userB.getItemAttributes();
+			itemAttributes.put("parkingId", null);
+			userB.setItemAttributes(itemAttributes);
+			userItem = entityConvert.fromBoundary(userB);
+			digitalItemDao.save(userItem);
 		}
 		else
 			throw new ItemNotFoundException("Cannot find parking lot with space : " + operation.getItem().getItemId().getSpace() + 
@@ -255,7 +242,7 @@ public class OperationsJpa implements OperationsServiceExtends {
 	}
 
 	private void enterParking(OperationBoundary operation) {
-		
+
 		Optional<ItemEntity> optionalParkingSpot = this.digitalItemDao
 				.findById(operation.getItem().getItemId().getSpace() + "@@" + operation.getItem().getItemId().getId());
 		if (optionalParkingSpot.isPresent()) {
@@ -275,9 +262,9 @@ public class OperationsJpa implements OperationsServiceExtends {
 					+ operation.getInvokedBy().getUserId().getEmail());
 			parkingSpot.setItemAttributes(entityConvert.fromMapToJson(itemAttributes));
 			digitalItemDao.save(parkingSpot);
-			
+			String userId = operation.getInvokedBy().getUserId().getSpace() + "@@" + operation.getInvokedBy().getUserId().getEmail();
 			Optional<ItemEntity> optionalUser = this.digitalItemDao
-					.findById(operation.getInvokedBy().getUserId().getSpace() + "@@" + operation.getInvokedBy().getUserId().getEmail());
+					.findByTypeAndUserId("User", userId);
 			if (optionalUser.isPresent()) {
 				ItemEntity user = optionalUser.get();
 				Map<String, Object> m = entityConvert.fromJsonToMap(user.getItemAttributes());
