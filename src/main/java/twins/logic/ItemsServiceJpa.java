@@ -126,7 +126,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			parkingspot.setActive(true); 
 			parkingspot.setCreatedBy(new CreatedBy(new UserId(userSpace, userEmail)));
 			parkingspot.setType("parkingspot");
-			parkingspot.setName("Parking number : " +i );
+			parkingspot.setName("Parking number : " +(i+1) );
 			parkingspot.setLocation(new Location(parkinglot.getLocation().getLat(), parkinglot.getLocation().getLng()));
 			Map<String, Object> itemAttributes = new HashMap<>();
 			itemAttributes.put("isAvailable", true);

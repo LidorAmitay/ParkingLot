@@ -1,6 +1,8 @@
 package twins.logic;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -284,17 +286,34 @@ public class OperationsJpa implements OperationsServiceExtends {
 	
 	private List<ItemBoundary> searchParkingSpot(OperationBoundary operation, int page, int size) {
 
-		String parkingLotId = (String) operation.getOperationAttributes().get("parkingLotId");
+		String parkingLotId = operation.getItem().getItemId().getSpace() + "@@" + operation.getItem().getItemId().getId();
 		//boolean checkActivation = (boolean) operation.getOperationAttributes().get("active");
-		boolean active = true;
+//		boolean active = true;
 		ItemEntity parent;
 		Optional<ItemEntity> optionalParent = this.digitalItemDao.findById(parkingLotId);
 		if (optionalParent.isPresent()) {
 			parent = optionalParent.get();
-			return this.digitalItemDao.findAllByItemParentAndActive(parent, active, PageRequest.of(page, size, Direction.DESC, "name"))
-			.stream()
-			.map(this.entityConvert::toBoundary)
-			.collect(Collectors.toList());
+//			return this.digitalItemDao.findAllByItemParentAndActive(parent, active, PageRequest.of(page, size, Direction.DESC, "name"))
+//			.stream()
+//			.map(this.entityConvert::toBoundary)
+//			.collect(Collectors.toList());
+			ArrayList<ItemBoundary> children = new ArrayList<>();
+			for (ItemEntity child : parent.getItemChildren()) {
+				ItemBoundary childBoundary = this.entityConvert.toBoundary(child);
+				if((boolean)childBoundary.getItemAttributes().get("isAvailable") == true) {
+					children.add(childBoundary);
+				}
+			}
+			Collections.sort(children, new Comparator<ItemBoundary>() {
+			    @Override
+			    public int compare(ItemBoundary o1, ItemBoundary o2) {
+			    	if(o1.getName().length() != o2.getName().length())
+			    		return o1.getName().length()-o2.getName().length();
+			        return o1.getName().compareTo(o2.getName());
+			    }
+			});
+			return children.subList(page*size, page*size+size);
+			
 		}
 		else
 			return Collections.<ItemBoundary>emptyList();
