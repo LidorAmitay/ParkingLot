@@ -1,7 +1,10 @@
 package twins.logic;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -17,17 +20,24 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import twins.data.DigitalItemDao;
+import twins.data.ItemEntity;
 import twins.data.UserDao;
 import twins.data.UserEntity;
 import twins.data.UserRole;
+import twins.digitalItemsAPI.CreatedBy;
+import twins.digitalItemsAPI.ItemBoundary;
+import twins.digitalItemsAPI.ItemId;
+import twins.digitalItemsAPI.Location;
 import twins.userAPI.UserBoundary;
-
+import twins.userAPI.UserId;
+import twins.logic.ItemsServiceJpa;
 @Service
 public class UsersServiceJpa implements UsersServiceExtends {
 
 	private String appName;
 	private UserDao userDao;
+	private DigitalItemDao itemDao;
 	private EntityConverter entityConverter;
 
 	// Constructor
@@ -37,6 +47,11 @@ public class UsersServiceJpa implements UsersServiceExtends {
 	@Autowired
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
+	}
+	
+	@Autowired
+	public void setDigitalItemDao(DigitalItemDao itemDao) {
+		this.itemDao = itemDao;
 	}
 
 	@Value("${spring.application.name:defaultName}")
@@ -73,7 +88,18 @@ public class UsersServiceJpa implements UsersServiceExtends {
 		if (user.getUsername() == null)
 			throw new RuntimeException("could not create user with no Username");
 		user.getUserId().setSpace(appName);
-
+		
+		ItemBoundary userItem = new ItemBoundary();  // saving user as item and user to save the parking.
+		userItem.setLocation(new Location(0.0,0.0));
+		userItem.setName("");
+		userItem.setType("User");
+		userItem.setItemId(new ItemId(appName,UUID.randomUUID().toString()));
+		userItem.setCreatedBy(new CreatedBy(new UserId(user.getUserId().getSpace(),user.getUserId().getEmail())));
+		userItem.setCreatedTimestamp(new Date());
+		userItem.setItemAttributes(new HashMap<>());
+		ItemEntity ie = this.entityConverter.fromBoundary(userItem);
+		ie = this.itemDao.save(ie);
+		
 		UserEntity entity = this.entityConverter.fromBoundary(user);
 		entity = this.userDao.save(entity);
 		return this.entityConverter.toBoundary(entity);
