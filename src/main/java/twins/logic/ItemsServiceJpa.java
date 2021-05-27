@@ -135,7 +135,7 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 			itemAttributes.put("ParkedUser", null);
 			parkingspot.setItemAttributes(itemAttributes);
 			parkingspot = createItem(userSpace, userEmail, parkingspot);
-			bindItemToItem(parkinglot.getItemId().getSpace()+"@@"+parkinglot.getItemId().getId(),
+			bindItemToItem(userSpace + "@@" + userEmail , parkinglot.getItemId().getSpace()+"@@"+parkinglot.getItemId().getId(),
 					parkingspot.getItemId().getSpace() + "@@" + parkingspot.getItemId().getId());
 			
 		}
@@ -213,7 +213,6 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 	@Override //Old
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail) {
-		// TODO add permission check manager or player
 		Iterable<ItemEntity>  allEntities = this.digitalItemDao
 				.findAll();
 			
@@ -271,7 +270,15 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 
 	@Override
 	@Transactional
-	public void bindItemToItem(String parentId, String childId) {
+	public void bindItemToItem(String userId, String parentId, String childId) {
+		Optional<UserEntity> optionalUser = this.userDao.findById(userId);
+		UserEntity user = null;
+		if(optionalUser.isPresent()) {
+			user = optionalUser.get();
+			if(!user.getRole().equals(UserRole.MANAGER))
+				throw new RuntimeException("Only MANAGER can update items");
+		}else
+			throw new RuntimeException("Can't find user : " + userId);
 		
 		ItemEntity parentItem = this.digitalItemDao
 				.findById(parentId)
@@ -289,32 +296,63 @@ public class ItemsServiceJpa implements UpdatedItemsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ItemBoundary> getAllChildren(String parentId) {
+	public List<ItemBoundary> getAllChildren(String userId, String parentId) {
+		Optional<UserEntity> optionalUser = this.userDao.findById(userId);
+		UserEntity user = null;
+		if(optionalUser.isPresent()) {
+			user = optionalUser.get();
+			if(user.getRole().equals(UserRole.ADMIN))
+				throw new RuntimeException("Admin does not have permission to get items");
+		}else
+			throw new RuntimeException("Can't find user : " + userId);
+		
 		ItemEntity parentItem = this.digitalItemDao
 				.findById(parentId)
 				.orElseThrow(()->new ItemNotFoundException("could not find parent item by id: " + parentId));
+		if(user.getRole().equals(UserRole.MANAGER)) {
+			return parentItem
+					.getItemChildren() // Set<ItemEntity>
+					.stream() // Stream<ItemEntity>
+					.map(this.entityConverter::toBoundary)// Stream<ItemBoundary>
+					.collect(Collectors.toList());
+		}else {// userRole is PLAYER
+			return parentItem
+					.getItemChildren()// Set<ItemEntity>
+					.stream()// Stream<ItemEntity>
+					.filter(c -> c.getActive() == true)// filtering non active items
+					.map(this.entityConverter::toBoundary)// Stream<ItemBoundary>
+					.collect(Collectors.toList());
+			
+		}
 		
-		return parentItem
-				.getItemChildren() // Set<ItemEntity>
-				.stream() // Stream<ItemEntity>
-				.map(this.entityConverter::toBoundary)// Stream<ItemEntity>
-				.collect(Collectors.toList());
+		
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<ItemBoundary> getAllParents(String childId) {
+	public Optional<ItemBoundary> getAllParents(String userId, String childId) {
+		Optional<UserEntity> optionalUser = this.userDao.findById(userId);
+		UserEntity user = null;
+		if(optionalUser.isPresent()) {
+			user = optionalUser.get();
+			if(user.getRole().equals(UserRole.ADMIN))
+				throw new RuntimeException("Admin does not have permission to get items");
+		}else
+			throw new RuntimeException("Can't find user : " + userId);
+		
 		ItemEntity childItem = this.digitalItemDao
 				.findById(childId)
 				.orElseThrow(()->new ItemNotFoundException("could not find parent item by id: " + childId));
 		
 		if (childItem.getItemParent() != null) {
-			return Optional.of(
-				this.entityConverter
-					.toBoundary(childItem.getItemParent()));
-		}else {
-			return Optional.empty();
+			if(childItem.getItemParent().getActive()) {
+				return Optional.of(
+						this.entityConverter
+							.toBoundary(childItem.getItemParent()));
+			}
 		}
+		return Optional.empty();
+		
 	}
 	
 }

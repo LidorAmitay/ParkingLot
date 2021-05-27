@@ -31,10 +31,12 @@ public class ItemsRelatedApi {
 			path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}/children",
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void addRelation (
+			@PathVariable("userSpace") String userSpace, 
+			@PathVariable("userEmail") String userEmail,
 			@PathVariable("itemSpace") String itemSpace, 
 			@PathVariable("itemId") String itemId, 
 			@RequestBody ItemId itemIdBoundary) {
-		this.itemsService.bindItemToItem(itemSpace + "@@" + itemId, itemIdBoundary.getSpace() + "@@" + itemIdBoundary.getId());
+		this.itemsService.bindItemToItem(userSpace + "@@" + userEmail, itemSpace + "@@" + itemId, itemIdBoundary.getSpace() + "@@" + itemIdBoundary.getId());
 	}
 	
 
@@ -42,10 +44,12 @@ public class ItemsRelatedApi {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary[] getChildren (
+			@PathVariable("userSpace") String userSpace, 
+			@PathVariable("userEmail") String userEmail,
 			@PathVariable("itemSpace") String itemSpace, 
 			@PathVariable("itemId") String itemId ){
 		return this.itemsService
-			.getAllChildren(itemSpace + "@@" + itemId)
+			.getAllChildren(userSpace + "@@" + userEmail, itemSpace + "@@" + itemId)
 			.toArray(new ItemBoundary[0]);
 	}
 
@@ -53,9 +57,11 @@ public class ItemsRelatedApi {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary[] getParents (
+			@PathVariable("userSpace") String userSpace, 
+			@PathVariable("userEmail") String userEmail,
 			@PathVariable("itemSpace") String itemSpace, 
 			@PathVariable("itemId") String itemId ){
-		Optional<ItemBoundary> getParent = this.itemsService.getAllParents(
+		Optional<ItemBoundary> getParent = this.itemsService.getAllParents(userSpace + "@@" + userEmail, 
 				itemSpace + "@@" + itemId);
 		if (getParent.isPresent())
 			return new ItemBoundary[] {getParent.get()};

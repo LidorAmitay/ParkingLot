@@ -248,6 +248,9 @@ public class OperationsJpa implements OperationsServiceExtends {
 		if (optionalParkingSpot.isPresent()) {
 			ItemEntity parkingSpot = new ItemEntity();
 			parkingSpot = optionalParkingSpot.get();
+			if(!parkingSpot.getActive())
+				throw new ItemNotFoundException("Could not find item email : " + operation.getItem().getItemId().getSpace()
+						+  "and id : " + operation.getItem().getItemId().getId());
 			Map<String, Object> itemAttributes;
 			if(parkingSpot.getItemAttributes() == null) {
 				itemAttributes = new HashMap<>();
