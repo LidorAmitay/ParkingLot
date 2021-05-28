@@ -115,7 +115,9 @@ public class OperationsJpa implements OperationsServiceExtends {
 				
 				double price;
 				price = exitparking(operation);
-				return price;
+				Map<String, Object> priceJson = new HashMap<>();
+				priceJson.put("Price", price);
+				return priceJson;
 				//break;
 				
 			case "searchParking":
