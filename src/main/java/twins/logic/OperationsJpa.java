@@ -249,7 +249,7 @@ public class OperationsJpa implements OperationsServiceExtends {
 			ItemEntity parkingSpot = new ItemEntity();
 			parkingSpot = optionalParkingSpot.get();
 			if(!parkingSpot.getActive())
-				throw new ItemNotFoundException("Could not find item email : " + operation.getItem().getItemId().getSpace()
+				throw new ItemNotFoundException("Could not find item space : " + operation.getItem().getItemId().getSpace()
 						+  "and id : " + operation.getItem().getItemId().getId());
 			Map<String, Object> itemAttributes;
 			if(parkingSpot.getItemAttributes() == null) {
@@ -258,6 +258,8 @@ public class OperationsJpa implements OperationsServiceExtends {
 			else {
 				itemAttributes = entityConvert.fromJsonToMap(parkingSpot.getItemAttributes());
 			}
+			if((boolean)itemAttributes.get("isAvailable") == false)
+				throw new RuntimeException("Parking spot is not available");
 			itemAttributes.put("isAvailable", false);
 			itemAttributes.put("EntryTime", operation.getCreatedTimestamp());
 			itemAttributes.put("idOperationCreate", operation.getOperationId());
@@ -315,15 +317,19 @@ public class OperationsJpa implements OperationsServiceExtends {
 					children.add(childBoundary);
 				}
 			}
-			Collections.sort(children, new Comparator<ItemBoundary>() {
-			    @Override
-			    public int compare(ItemBoundary o1, ItemBoundary o2) {
-			    	if(o1.getName().length() != o2.getName().length())
-			    		return o1.getName().length()-o2.getName().length();
-			        return o1.getName().compareTo(o2.getName());
-			    }
-			});
-			return children.subList(page*size, page*size+size);
+			if (children.size() != 0) {
+				Collections.sort(children, new Comparator<ItemBoundary>() {
+				    @Override
+				    public int compare(ItemBoundary o1, ItemBoundary o2) {
+				    	if(o1.getName().length() != o2.getName().length())
+				    		return o1.getName().length()-o2.getName().length();
+				        return o1.getName().compareTo(o2.getName());
+				    }
+				});
+				return children.subList(page*size, page*size+size);
+			}
+			return children;
+
 			
 		}
 		else
