@@ -130,11 +130,20 @@ public class OperationsJpa implements OperationsServiceExtends {
 		case "getAllParkingLots":
 
 			return getAllParkingLots(operation, page, size);
-
+			
+		case "getAllParkingLotsByUser":
+			
+			return getAllParkingLotsByUser(operation, page, size);
 		}
 
 		return this.entityConvert.toBoundary(entity);
 
+	}
+
+	private Object getAllParkingLotsByUser(OperationBoundary operation, int page, int size) {
+		return this.digitalItemDao
+				.findAllByTypeAndUserId("parkingLot", operation.getInvokedBy().getUserId().getSpace()+"@@"+operation.getInvokedBy().getUserId().getEmail(), PageRequest.of(page, size, Direction.DESC, "name")).stream()
+				.map(this.entityConvert::toBoundary).collect(Collectors.toList());
 	}
 
 	private Object getAllParkingLots(OperationBoundary operation, int page, int size) {
@@ -258,6 +267,8 @@ public class OperationsJpa implements OperationsServiceExtends {
 		else
 			throw new ItemNotFoundException("User item not found with user id : " + userId);
 		
+		
+		//checking if driver is parking in another spot
 		if (userAttributes.get("parkingId") != null)
 			throw new RuntimeException("The Driver is already registered into another parking spot.");
 		
