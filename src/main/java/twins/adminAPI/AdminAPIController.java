@@ -1,7 +1,5 @@
 package twins.adminAPI;
 
-import java.util.Arrays;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,21 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import twins.data.OperationsDao;
-import twins.digitalItemsAPI.ItemId;
-import twins.logic.ItemsService;
-import twins.logic.OperationsService;
 import twins.logic.OperationsServiceExtends;
 import twins.logic.UpdatedItemsService;
-import twins.logic.UsersService;
 import twins.logic.UsersServiceExtends;
-import twins.logic.UsersServiceMockup;
-import twins.operationsAPI.InvokedBy;
-import twins.operationsAPI.Item;
 import twins.operationsAPI.OperationBoundary;
-import twins.operationsAPI.OperationId;
 import twins.userAPI.UserBoundary;
-import twins.userAPI.UserId;
 
 
 @RestController

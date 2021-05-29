@@ -3,12 +3,9 @@ package twins.data;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.util.Streamable;
 
 public interface DigitalItemDao extends PagingAndSortingRepository<ItemEntity, String>{
 
@@ -34,12 +31,6 @@ public interface DigitalItemDao extends PagingAndSortingRepository<ItemEntity, S
 	public Optional<ItemEntity> findByTypeAndUserId(
 			@Param("type") String type,
 			@Param("userId") String userId);
-	
-	
-//	public Optional<ItemEntity> findByTypeAndUserId(
-//			@Param("type") String type,
-//			@Param("userId") String userId,			
-//			Pageable pageable);
 
 
 }
